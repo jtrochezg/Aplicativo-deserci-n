@@ -1,0 +1,3596 @@
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+---
+title: \vspace{3.5in}"Title"
+author: "Name"
+date: "`r Sys.Date()`"
+output:
+   pdf_document:
+      fig_caption: true
+      number_sections: true
+---
+
+\newpage # adds new page after title
+\tableofcontents # adds table of contents
+\listoffigures
+\listoftables
+\newpage
+
+
+#Informe de deserci\tilde{o}n institucional
+
+Este informe trata de la desercion institucional en el Instituto tecnológico metropolitano
+El muestreo se hizo con la siguiente información 
+
+##Tamaños de muestra
+
+```{r echo=FALSE}
+ inFile <- input$file
+       if (is.null(inFile))
+         return(NULL)
+       data1=read.table(inFile$datapath, header=T)
+       
+       t2=ftable(data1[, input$facultad],data1[, input$Programa],exclude=0,row.vars = 1:2)
+       t2=data.frame(t2)
+       
+       ##funcion para convertir 0 en NA
+       haz.cero.na=function(x){
+         ifelse(x==0,NA,x)}
+       
+       
+       
+       
+       #pasos para quitar 0 de los datos
+       dataf.2=data.frame(sapply(t2[3],haz.cero.na))
+       tt=data.frame(t2,dataf.2)
+       ttt=na.omit(tt)
+       tt1=ttt[-4]
+       
+       prop=round(ttt[3]/sum(ttt[3])*100,2)
+       prop2=((tt1[3]/sum(tt1[3])))
+       total=sum(tt1[3])
+       
+       hh=as.numeric(((1-input$bins2)/2))
+       z=qnorm(hh, mean = 0, sd = 1)
+       
+       total=sum(ttt[3])
+       error=input$bins1
+       q=(1-prop2)
+       num=(total*prop2*q*(z^2))
+       den=(error^2*(total-1))+(prop2*(1-prop2)*(z^2))
+       tamao=round(num/den)
+       
+       ###Encuestados
+       tefe=ftable(data1[, input$facultad],data1[, input$Programa],data1[, input$Encu],row.vars = 1:3)
+       tefe=data.frame(tefe)
+       
+       dataf3=data.frame(sapply(tefe[4],haz.cero.na))
+       
+       ttf=data.frame(tefe,dataf3)
+       tttf=na.omit(ttf)
+       tttf=tttf[-5]
+       
+       tttsi=as.numeric(tttf$Freq[27:length(tttf$Freq)])
+       kable(data.frame(
+         Name = c("Error",
+                  "Nivel de confianza",
+                  "Personas encuestadas",
+                  "Tamao muestral",
+                  "Tamao poblacional"
+                                    ),
+         Value = as.character(c(input$bins1,
+                                input$bins2,
+                                sum(tttsi),
+                                sum(tamao),
+                                length(data1[, input$facultad])
+                            )
+                            ),
+         stringsAsFactors = FALSE),
+          caption = "Información del muestreo",
+         
+             format.args = list( decimal.mark = ",")
+         )
+       
+       
+
+```
+
+tamaños de muestra por facultad
+
+
+
+```{r echo=FALSE}
+
+   t2=ftable(data1[, input$facultad],row.vars = 1)
+       t2=data.frame(t2)
+      
+       prop=round(t2[2]/sum(t2[2])*100,2)
+       prop2=((t2[2]/sum(t2[2])))
+       total=sum(t2[2])
+       
+       hh=as.numeric(((1-input$bins2)/2))
+       z=qnorm(hh, mean = 0, sd = 1)
+       
+       #z=1.96
+       total=sum(t2[2])
+       error=input$bins1
+       q=(1-prop2)
+       num=(total*prop2*q*(z^2))
+       den=(error^2*(total-1))+(prop2*(1-prop2)*(z^2))
+       tamao=round(num/den)
+       
+       ###Encuestados
+       
+       
+       tefe=ftable(data1[, input$facultad],data1[, input$Encu],row.vars = 1:2)
+       tefe=data.frame(tefe)
+       
+
+       
+       tttsi=as.numeric(tefe$Freq[5:length(tefe$Freq)])
+       
+       
+       tt11=cbind(t2,prop,tamao,tttsi)
+       colnames(tt11) <- c("Facultad","Conteo","Proporcion","Tamao","Efectivas")
+       colnames(tt11) <- c("Facultad","Conteo","Proporcion","Tamao","Efectivas")
+       kable(tt11,caption = "Tamaño de muestra por facultad")
+       
+```
+ 
+ 
+## Tamanos de muestra por facultad y programa
+ 
+ 
+```{r echo=FALSE}
+#tabla de datos
+       t2=ftable(data1[, input$facultad],data1[, input$Programa],exclude=0,row.vars = 1:2)
+       t2=data.frame(t2)
+       #t2
+       ##funcion para convertir 0 en NA
+       haz.cero.na=function(x){
+         ifelse(x==0,NA,x)}
+       
+       #pasos para quitar 0 de los datos
+       dataf.2=data.frame(sapply(t2[3],haz.cero.na))
+       tt=data.frame(t2,dataf.2)
+       #tt
+       ttt=na.omit(tt)
+       #ttt
+       tt1=ttt[-4]
+       
+       prop=round(ttt[3]/sum(ttt[3])*100,2)
+       prop2=((tt1[3]/sum(tt1[3])))
+       total=sum(tt1[3])
+       
+       hh=as.numeric(((1-input$bins2)/2))
+       z=qnorm(hh, mean = 0, sd = 1)
+       
+       #z=1.96
+       total=sum(ttt[3])
+       
+       error=input$bins1
+       q=(1-prop2)
+       num=(total*prop2*q*(z^2))
+       den=(error^2*(total-1))+(prop2*(1-prop2)*(z^2))
+       tamao=round(num/den)
+       
+       ###Encuestados
+       tefe=ftable(data1[, input$facultad],data1[, input$Programa],data1[, input$Encu],row.vars = 1:3)
+       tefe=data.frame(tefe)
+       
+       dataf3=data.frame(sapply(tefe[4],haz.cero.na))
+       
+       
+       ttf=data.frame(tefe,dataf3)
+       tttf=na.omit(ttf)
+       tttf=tttf[-5]
+       
+       tttsi=as.numeric(tttf$Freq[27:length(tttf$Freq)])
+       
+       
+       tt11=cbind(tt1,prop,tamao,tttsi)
+       colnames(tt11) <- c("Facultad","Programa","Conteo","Proporcion","Tamao","Efectivas")
+       kable(tt11,caption = "Tamanos de muestra por programa")
+```
+ 
+
+##Descripción de la población desertora
+A continuación se observa la desercion según el tipo de programa
+
+```{r echo=FALSE}
+      
+tipo= as.factor(data1[, input$tipo])
+  
+    
+    #-------
+    datas=data.frame(tipo)
+    
+    ttt=na.omit(datas)
+    
+    
+    ggplot(data=ttt,aes(x=tipo)) +
+      geom_bar(stat = "count",position="dodge",fill=("skyblue"))+
+     theme(axis.text.x = element_text(angle = 0, hjust = 1,size=rel(1)),
+            axis.text.y = element_text(hjust = 1,size=rel(1)),
+            axis.text = element_text(size = 12),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+      labs(   x = "Tipo de programa",y = "Frecuencia Absoluta ")
+
+
+t2=ftable(data1[, input$tipo],row.vars = 1)
+    t2=data.frame(t2)
+    prop=round(t2[2]/sum(t2[2])*100,2)
+    tt11=cbind(t2,prop)
+    tt22=data.frame(tt11[ordered(tt11$Freq),])
+    colnames(tt22) <- c("Tipo","Conteo","Proporcion")
+    
+   kable(tt22, caption = "Tipo de programa")
+
+
+
+```
+
+Descrimando según el nivel:
+
+
+
+```{r echo=FALSE, fig.width=8}
+
+Nivel= as.factor(data1[, input$nivel])
+    tipo = as.factor(data1[, input$tipo])
+    
+     t2=table(Nivel,tipo)
+       t3=prop.table(round(t2),2)
+       t4=addmargins(t3)
+       kable(round(t4,4)*100,caption = "Semestre de deserción")
+    #-------
+    datas=data.frame(Nivel,tipo)
+    
+    ttt=na.omit(datas)
+   
+    ggplot(data=ttt,aes(x=Nivel),fill=tipo) +
+      geom_histogram(stat = "count",position="dodge",fill=("skyblue"),
+                     aes(y=..count../sum(..count..)))+
+      scale_y_continuous(labels = scales::percent)+  
+     theme(axis.text.x = element_text(angle = 0, hjust = 1,size=rel(1)),
+            axis.text.y = element_text(hjust = 1,size=rel(1)),
+            axis.text = element_text(size = 10),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+      facet_grid(~tipo, scales="free", space="free")+
+            labs(   x = "Nivel",y = "Frecuencia relativa")
+
+```
+
+
+la edad de la poblacion desertora se muestra a continuación
+
+```{r echo=FALSE}
+
+tmp <- hist(as.numeric(data1[,input$edad]),main="",
+            breaks=(input$obs)-1,col="skyblue",border="gray",xlab="Edad",
+            cex.lab=1,ylab="Frecuencia absoluta")
+
+box()
+y=table.freq(tmp)
+kable(y, caption = "Edad de los estudiantes desertores")
+
+
+```
+el genero de la población es
+
+
+```{r echo=FALSE}
+ Genero= as.factor(data1[, input$gen])
+    
+    datas=data.frame(Genero)
+    
+    ttt=na.omit(datas)
+    
+    
+    ggplot(data=ttt,aes(x=Genero)) +
+      geom_bar(stat = "count",position="dodge",fill=("skyblue"))+
+     theme(axis.text.x = element_text(angle = 0, hjust = 1,size=rel(1)),
+            axis.text.y = element_text(hjust = 1,size=rel(1)),
+            axis.text = element_text(size = 12),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+      labs(   x = "Genero",y = "Frecuencia absoluta")
+    
+    
+    t2=ftable(data1[, input$gen],row.vars = 1)
+    t2=data.frame(t2)
+    prop=round(t2[2]/sum(t2[2])*100,2)
+    tt11=cbind(t2,prop)
+    tt22=data.frame(tt11[ordered(tt11$Freq),])
+    colnames(tt22) <- c("Genero","Conteo","Proporcion")
+    kable(tt22,  caption = "Genero de los desertores")
+    
+```
+
+El estado civil
+
+```{r echo=FALSE}
+
+civil= as.factor(data1[, input$civil])
+  
+    datas=data.frame(civil)
+    
+    ttt=na.omit(datas)
+    
+    
+    ggplot(data=ttt,aes(x=civil)) +
+      geom_bar(stat = "count",position="dodge",fill=("skyblue"))+
+theme(axis.text.x = element_text(angle = 30, hjust = 1,size=rel(1)),
+            axis.text.y = element_text(hjust = 1,size=rel(1)),
+            axis.text = element_text(size = 12),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+      labs(   x = "Estado civil",y = "Frecuencia absoluta")
+    
+    
+    
+     t2=ftable(data1[, input$civil],row.vars = 1)
+    t2=data.frame(t2)
+    prop=round(t2[2]/sum(t2[2])*100,2)
+    tt11=cbind(t2,prop)
+    tt22=data.frame(tt11[ordered(tt11$Freq),])
+    colnames(tt22) <- c("Estado civil","Conteo","Proporcion")
+    kable(tt22,  caption = "Estado civil de los desertores")
+    
+
+
+
+```
+
+Estrato de la vivienda
+
+```{r echo=FALSE}
+data1=read.table(inFile$datapath, header=T)
+ estrato= as.factor(data1[, input$estrato])
+    
+    datas=data.frame(estrato)
+    
+    ttt=na.omit(datas)
+    
+    
+    ggplot(data=ttt,aes(x=estrato)) +
+      geom_bar(stat = "count",position="dodge",fill=("skyblue"))+
+      theme(axis.text.x = element_text(angle = 0, hjust = 1,size=rel(1)),
+            axis.text.y = element_text(hjust = 1,size=rel(1)),
+            axis.text = element_text(size = 12),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+      labs(x = "Estrato",y = "Frecuencia absoluta")
+    
+    
+    t2=ftable(data1[, input$estrato],row.vars = 1)
+    t2=data.frame(t2)
+    prop=round(t2[2]/sum(t2[2])*100,2)
+    tt11=cbind(t2,prop)
+    tt22=data.frame(tt11[ordered(tt11$Freq),])
+    colnames(tt22) <- c("Estrato","Conteo","Proporcion")
+   kable(tt22, caption = "Estrato de los desertores")
+```
+
+zona de vivienda
+
+```{r echo=FALSE}
+reorder_size <- function(x) {
+      factor(x, levels = names(sort(table(x),decreasing = TRUE)))
+}
+
+    zonas= data1[, input$zona]
+    data=data.frame(zonas)
+    
+    ttt=na.omit(data)
+    
+    ggplot(ttt,aes(reorder_size(ttt$zonas)))+
+      geom_bar(stat = "count",position="dodge",fill=("skyblue"))+
+      theme(axis.text.x = element_text(angle = 45, hjust = 1,size=rel(1)),
+            axis.text.y = element_text(hjust = 1,size=rel(1)),
+            axis.text = element_text(size = 12),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+      labs(   x = "Zona de vivienda",y = "Frecuencia absoluta")
+     
+    t2=table((data1[, input$zona]),useNA ="no")
+    
+    
+    t3=prop.table(t2)
+    t4=addmargins(t3)
+    t4=as.data.frame(round(t4,4)*100)
+    kable(t4,  caption = "Zona de vivienda")
+```
+
+
+##causas y Razones de deserción a nivel institucional
+
+```{r echo=FALSE, fig.align='center', fig.width=8}
+
+      T1 <- table(data1[, input$Razn],data1[, input$Causa],useNA = "no")
+      T1 <- prop.table(T1)
+      
+      barplot(colSums(T1),col = 'skyblue', border = 'white',cex.axis = 1,cex.names=1,
+             xlab="Causas ",cex.lab=1,ylab="Frecuencia relativa" )
+      box()
+      
+ kable(colSums(T1), caption = "Causas de desercion en el ITM")
+
+ t2=table(data1[, input$Causa])
+t2=data.frame(t2)
+
+tot=sum(t2$Freq)
+pp=round(t2$Freq/tot*100,2)
+ff=cbind(t2,pp)
+
+pos=which.max(pp)
+       
+```
+
+Donde se observa que la causa de mayor participación es `r t2[pos,1]` con una proporción de  `r max(pp)`.
+
+
+Razones de deserción en el ITM
+
+
+
+```{r echo=FALSE,  fig.width=10, fig.align='center',fig.height=7}
+
+        Causas = as.factor(data1[, input$Causa])
+        Razns = as.factor(data1[, input$Razn])
+        
+        t2=ftable(Causas,Razns,row.vars = 1:2)
+        t2=data.frame(t2)
+    haz.cero.na=function(x){
+    ifelse(x==0,NA,x)}
+        
+        datas=data.frame(Causas, Razns)
+        
+        ttt=na.omit(datas)
+      
+        reorder_size <- function(x) {
+          factor(x, levels = names(sort(table(x),decreasing = TRUE)))
+        }
+        ###%in%levels(ttt$razon)[table(ttt$razon)>1]
+        ggplot(data=ttt,aes(x=reorder_size(Razns),fill=Causas)) +
+          geom_histogram(stat = "count",position="dodge",fill=("skyblue"),
+                         aes(y=..count../sum(..count..)))+
+          scale_y_continuous(labels = scales::percent)+  
+        theme(axis.text.x = element_text(angle =45, hjust = 1,size=rel(0.9)),
+            axis.text.y = element_text(hjust = 1,size=rel(1)),
+            axis.text = element_text(size = 12),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+          facet_grid(~Causas, scales="free", space="free")+
+          labs(x = "Razones ",y = "Frecuencia relativa")
+  
+     t2=ftable(Causas,Razns,row.vars = 1:2)
+        t2=data.frame(t2)
+        
+        
+     
+     #pasos para quitar 0 de los datos
+     dataf.2=data.frame(sapply(t2[3],haz.cero.na))
+     tt=data.frame(t2,dataf.2)
+     ttt=na.omit(tt)
+     tt1=ttt[-4]
+     tt11=data.frame(cbind(tt1,round(tt1[3]/sum(tt1[3])*100,2)))
+       colnames(tt11) <- c("Causa","Razon","Conteo","Proporcion")
+       
+       kable(tt11, caption = "Causas y Razones de deserción en el ITM")
+
+       
+          div=split(tt11,tt11$Causa)
+
+gg=data.frame(div[[1]])
+
+tT=as.numeric(gg[,3])
+POS=which.max(tT)
+
+       
+```
+
+
+
+## Comparacion de causas de desercion entre facultades
+
+```{r echo=FALSE}
+Causas = as.factor(data1[, input$Causa])
+       Razns = as.factor(data1[, input$Razn])
+       facultad=as.factor(data1[, input$facultad])
+      
+       
+       yy=table(Causas,facultad)
+       u=prop.table(yy,2)
+       u=addmargins(u,1)
+       
+       kable(round(u,4)*100, caption = "Causas de deserción entre facultades")
+      
+    ```
+
+
+Comparación de Razones  entre facultades
+
+
+```{r echo=FALSE}
+             yy=table(Razns,facultad)
+             u=prop.table(yy,2)
+             u=addmargins(u,1)
+             kable(round(u,4)*100, caption = "Razones de deserción entre facultades")
+              ff=levels(facultad)
+```
+
+
+## Facultad de artes y humanidades
+En la siguiente tabla y figura se ilustra el nivel de desercion en la facultad de  
+`r ff[1]`
+
+```{r echo=FALSE, fig.width=8}
+
+    yu=split(data1,data1[, input$facultad])
+    AYH= yu[[1]]
+    
+      Nivel=as.factor(AYH[, input$nivel])
+      tipo=as.factor(AYH[,input$tipo])
+      
+      
+      datas=data.frame(Nivel,tipo)
+      ttt=na.omit(datas)
+    
+      ggplot(data=ttt,aes(x=Nivel),fill=tipo) +
+        geom_histogram(stat = "count",position="dodge",fill=("skyblue"),
+                       aes(y=..count../sum(..count..)))+
+        scale_y_continuous(labels = scales::percent)+  
+       theme(axis.text.x = element_text(angle = 0, hjust = 1,size=rel(1)),
+            axis.text.y = element_text(hjust = 1,size=rel(1)),
+            axis.text = element_text(size = 12),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+        facet_grid(~tipo, scales="free", space="free")+
+          labs(   x = "Nivel de desercion",y = "Frecuencia relativa")
+      
+      
+      t2=table(Nivel,tipo)
+      t3=prop.table(round(t2),2)
+      t4=addmargins(t3)
+      
+      kable(round(t4,4)*100,caption = "Nivel de deserción según el tipo de programa")
+
+
+```
+
+
+Causas de desercion en la facultad de artes
+
+```{r echo=FALSE,fig.width=8 }
+    
+    Causas = as.factor(AYH[, input$Causa])
+    Razns = as.factor(AYH[, input$Razn])
+    T1 <- table(Razns,Causas,useNA = "no")
+    T1 <- prop.table(T1)
+    barplot(colSums(T1),col = 'skyblue', border = 'white',cex.axis = 1,cex.names=1,
+            xlab="Causas ",cex.lab=1,ylab="Frecuencia relativa")
+    box()
+    
+    t2=ftable(Causas,row.vars = 1)
+    t2=data.frame(t2)
+    prop=round(t2[2]/sum(t2[2])*100,2)
+    tt11=cbind(t2,prop)
+    tt22=data.frame(tt11[ordered(tt11$Freq),])
+    colnames(tt22) <- c("Causa","Conteo","Proporcion")
+    kable(tt22,caption = "Causas de deserción en la facultad de artes")
+
+    GY=(colSums(T1))
+t2=table(Causas)
+t2=data.frame(t2)
+
+tot=sum(t2$Freq)
+pp=round(t2$Freq/tot*100,2)
+ff=cbind(t2,pp)
+
+pos=which.max(pp)
+
+```
+
+Donde se observa que la causa de mayor participación es `r t2[pos,1]` con una proporción de  `r max(colSums(T1))`.
+
+
+Razones  de la facultad de artes
+
+
+```{r echo=FALSE,fig.width=9, fig.align='center',fig.height=6}
+
+ t2=ftable(Causas,Razns,row.vars = 1:2)
+    t2=data.frame(t2)
+    haz.cero.na=function(x){
+      ifelse(x==0,NA,x)}
+
+    datas=data.frame(Causas, Razns)
+
+    ttt=na.omit(datas)
+      reorder_size <- function(x) {
+      factor(x, levels = names(sort(table(x),decreasing = TRUE)))
+    }
+    ###%in%levels(ttt$razon)[table(ttt$razon)>1]
+    ggplot(data=ttt,aes(x=reorder_size(Razns),fill=Causas)) +
+      geom_histogram(stat = "count",position="dodge",fill=("skyblue"),
+                     aes(y=..count../sum(..count..)))+
+      scale_y_continuous(labels = scales::percent)+  
+     theme(axis.text.x = element_text(angle =45, hjust = 1,size=rel(1)),
+            axis.text.y = element_text(hjust = 1,size=rel(1)),
+            axis.text = element_text(size = 12),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+      facet_grid(~Causas, scales="free", space="free")+
+      labs(   x = "Razones ",y = "Frecuencia relativa")
+    
+    t2=ftable(Causas,Razns,row.vars = 1:2)
+    t2=data.frame(t2)
+  
+    haz.cero.na=function(x){
+    ifelse(x==0,NA,x)}
+    
+    dataf.2=data.frame(sapply(t2[3],haz.cero.na))
+    tt=data.frame(t2,dataf.2)
+    ttt=na.omit(tt)
+    ttt=ttt[-4]
+    
+    prop=round(ttt[3]/sum(ttt[3])*100,2)
+    tt11=cbind(ttt,prop)
+    tt22=data.frame(tt11[order(tt11$Causas),])
+    colnames(tt22) <- c("Causa","Razon","Conteo","Proporcion")
+    sum(tt22$Conteo)
+  kable(tt22, caption = "Causas y Razones de deserción en la facultad de artes")
+  
+  
+t2=table(Razns)
+t2=data.frame(t2)
+
+tot=sum(t2$Freq)
+pp=round(t2$Freq/tot*100,2)
+ff=cbind(t2,pp)
+
+pos=which.max(pp)
+  
+```
+
+
+
+Al mirar en detalle las causas y razones de deserción, que se ilustran en la siguiente tabla y figura, se encontró que:
+•	Causa Personal: una de las razones de mayor peso es la orientación vocacional con una proporción de 16.87%, seguido de falta de tiempo para estudiar con una proporción del 8.43%
+•	Causa Laboral: La razón de más peso es el cambio de horario laboral con una proporción del 10,84%.
+•	Causa académica: La razón académica de mayor peso es la pérdida del derecho al programa con una proporción de 12.05%.
+•	Causa económica: La razón económica de mayor peso es la insolvencia económica con una proporción del 14.46%.
+
+
+
+Causas EN PROGRAMAS TECNOLÓGICOS DE LA FACULTAD DE ARTES
+
+
+```{r echo=FALSE}
+
+
+ inFile <- input$file
+       if (is.null(inFile))
+         return(NULL)
+data1=read.table(inFile$datapath, header=T)
+
+ yu=split(data1,data1[, input$facultad])
+       
+       yus=yu[[1]]
+       
+       pp=as.character(yus[,input$Programa])
+       tip=as.character(yus[,input$tipo])
+       caus=as.character(yus[,input$Causa])
+      raz=as.character(yus[,input$Razn])
+       
+       rr=data.frame(tip,pp,caus,raz)
+       
+       artt=split(rr,tip)
+       tcnart=artt[[2]]
+       
+       tcnart=na.omit(tcnart)
+       
+       pro=as.character(tcnart$pp)
+     
+       
+       t2=table(tcnart$caus,pro)
+       t2=prop.table(t2,2)
+        u=addmargins(t2,1)
+       
+       kable(round(u,4)*100,
+             caption = "Causas en los programas 
+             tecnológicos de la facultad de artes y humanidades")
+       
+       
+       
+```
+
+
+
+Razones  DE LOS PROGRAMAS TECNOLOGICOS DE LA FACULTAD DE ARTES
+```{r echo=FALSE}
+
+       t2=table(tcnart$raz,pro)
+       t2=prop.table(t2,2)
+       
+       u=addmargins(t2,1)
+       
+       kable(round(u,3)*100,caption = "Razones de desercion en los programas 
+             tecnológicos de la facultad de artes y humanidades")
+```
+
+causas y razones por programas tecnológicos
+Diseno industrial
+
+
+```{r echo=FALSE,fig.width=8}
+inFile <- input$file
+    if (is.null(inFile))
+      return(NULL)
+    data1=read.table(inFile$datapath, header=T)
+    
+    yu=split(data1,data1[, input$facultad])
+    
+    yus=yu[[1]]
+    
+    
+    
+    pp=as.character(yus[,input$Programa])
+    tip=as.character(yus[,input$tipo])
+    caus=as.character(yus[,input$Causa])
+    raz=as.character(yus[,input$Razn])
+    
+    rr=data.frame(tip,pp,caus,raz)
+    
+    artt=split(rr,pp)
+    
+    tcnart=artt[[3]]
+    
+    tcnart=na.omit(tcnart)
+    
+    rr2=data.frame(tcnart$pp,tcnart$caus,tcnart$raz)
+    
+    
+    
+   
+```
+
+#Diseño Industrial
+
+Se reliza el analisis de la `r tcnart$tip[1]` en `r tcnart$pp[1]`
+
+
+causas de desercion en `r tcnart$pp[1]`
+```{r echo=FALSE}
+  T1 <- table(tcnart$caus,useNA = "no")
+    T1 <- prop.table(T1)
+    
+    barplot((T1),col = 'skyblue', border = 'white',cex.axis =1,cex.names=1,
+            xlab="Causas",cex.lab=1,ylab="Frecuencia relativa")
+    box()
+    
+    
+    
+    t2t=table(tcnart$caus)
+t2t=data.frame(t2t)
+
+tott=sum(t2t$Freq)
+pp1=round(t2t$Freq/tot*100,2)
+ff1=cbind(t2t,pp1)
+
+pos1=which.max(pp1)
+  
+```
+
+
+
+
+
+Razones de desercion en `r tcnart$pp[1]`
+```{r echo=FALSE,fig.width=8, fig.align='center',fig.height=5}
+
+
+  tcnart=artt[[3]]
+    
+    tcnart=na.omit(tcnart)
+    
+    colnames(tcnart) <- c("tipo3","programa3","Causa3","razon3")
+    
+    
+    
+    reorder_size <- function(x) {
+      factor(x, levels = names(sort(table(x),decreasing = TRUE)))
+    }
+    ###%in%levels(ttt$razon)[table(ttt$razon)>1]
+    ggplot(data=tcnart,aes(x=reorder_size(razon3),fill=Causa3)) +
+      geom_histogram(stat = "count",position="dodge",fill=("skyblue"),
+                     aes(y=..count../sum(..count..)))+
+      scale_y_continuous(labels = scales::percent)+  
+     theme(axis.text.x = element_text(angle =45, hjust = 1,size=rel(1)),
+            axis.text.y = element_text(hjust = 1,size=rel(1)),
+            axis.text = element_text(size = 12),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+      facet_grid(~Causa3, scales="free", space="free")+
+      labs(x = "Razones ",y = "Frecuencia relativa")
+    
+    
+```
+
+
+
+
+
+
+INFORMATICA MUSICAL
+
+
+```{r  echo=FALSE,fig.width=8}
+
+ inFile <- input$file
+    if (is.null(inFile))
+      return(NULL)
+    data1=read.table(inFile$datapath, header=T)
+    
+    yu=split(data1,data1[, input$facultad])
+    
+    yus=yu[[1]]
+    
+    
+    
+    pp=as.character(yus[,input$Programa])
+    tip=as.character(yus[,input$tipo])
+    caus=as.character(yus[,input$Causa])
+    raz=as.character(yus[,input$Razn])
+    
+    rr=data.frame(tip,pp,caus,raz)
+    
+    artt=split(rr,pp)
+    
+    tcnart=artt[[4]]
+    
+    tcnart=na.omit(tcnart)
+    
+    rr2=data.frame(tcnart$pp,tcnart$caus,tcnart$raz)
+    
+    T1 <- table(tcnart$caus,useNA = "no")
+    T1 <- prop.table(T1)
+    
+    barplot((T1),col = 'skyblue', border = 'white',cex.axis =1,cex.names=1,
+            xlab="Causas",cex.lab=1,ylab="Frecuencia relativa")
+    box()
+    
+
+
+
+
+
+```
+
+razones
+
+
+```{r echo=FALSE, fig.width=8, fig.align='center',fig.height=6}
+
+  tcnart=artt[[4]]
+    
+    tcnart=na.omit(tcnart)
+    
+    colnames(tcnart) <- c("tipo3","programa3","Causa3","razon3")
+    
+    
+    reorder_size <- function(x) {
+      factor(x, levels = names(sort(table(x),decreasing = TRUE)))
+    }
+    ###%in%levels(ttt$razon)[table(ttt$razon)>1]
+    ggplot(data=tcnart,aes(x=reorder_size(razon3),fill=Causa3)) +
+      geom_histogram(stat = "count",position="dodge",fill=("skyblue"),
+                     aes(y=..count../sum(..count..)))+
+      scale_y_continuous(labels = scales::percent)+  
+     theme(axis.text.x = element_text(angle =45, hjust = 1,size=rel(0.8)),
+            axis.text.y = element_text(hjust = 1,size=rel(1)),
+            axis.text = element_text(size = 12),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+      facet_grid(~Causa3, scales="free", space="free")+
+      labs(x = "Razones ",y = "Frecuencia relativa")
+```
+
+ARTES DE LA GRABACIÓN
+
+causas
+```{r echo=FALSE, fig.width=8}
+inFile <- input$file
+    if (is.null(inFile))
+      return(NULL)
+    data1=read.table(inFile$datapath, header=T)
+    
+    yu=split(data1,data1[, input$facultad])
+    
+    yus=yu[[1]]
+    
+    pp=as.character(yus[,input$Programa])
+    tip=as.character(yus[,input$tipo])
+    caus=as.character(yus[,input$Causa])
+    raz=as.character(yus[,input$Razn])
+    
+    rr=data.frame(tip,pp,caus,raz)
+    
+    artt=split(rr,pp)
+  
+    tcnart=artt[[2]]
+    
+    tcnart=na.omit(tcnart)
+   
+    rr2=data.frame(tcnart$pp,tcnart$caus,tcnart$raz)
+    
+    T1 <- table(tcnart$caus,useNA = "no")
+    T1 <- prop.table(T1)
+    
+    barplot((T1),col = 'skyblue', border = 'white',cex.axis=1,cex.names=1,
+           xlab="Causas",cex.lab=1,ylab="Frecuencia relativa")
+    box()
+```
+
+razones
+
+
+```{r echo=FALSE,fig.width=8, fig.align='center',fig.height=6}
+
+    tcnart=artt[[2]]
+    
+    tcnart=na.omit(tcnart)
+    
+    colnames(tcnart) <- c("tipo3","programa3","Causa3","razon3")
+    
+    
+    reorder_size <- function(x) {
+      factor(x, levels = names(sort(table(x),decreasing = TRUE)))
+    }
+    ###%in%levels(ttt$razon)[table(ttt$razon)>1]
+    ggplot(data=tcnart,aes(x=reorder_size(razon3),fill=Causa3)) +
+      geom_histogram(stat = "count",position="dodge",fill=("skyblue"),
+                     aes(y=..count../sum(..count..)))+
+      scale_y_continuous(labels = scales::percent)+  
+      theme(axis.text.x = element_text(angle =45, hjust = 1,size=rel(0.8)),
+            axis.text.y = element_text(hjust = 1,size=rel(1)),
+            axis.text = element_text(size = 12),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+      facet_grid(~Causa3, scales="free", space="free")+
+      labs(x = "Razones ",y = "Frecuencia relativa")
+    
+```
+
+ARTES VISUALES
+
+
+```{r echo=FALSE,fig.align='center', fig.width=8}
+
+
+ inFile <- input$file
+    if (is.null(inFile))
+      return(NULL)
+    data1=read.table(inFile$datapath, header=T)
+    
+    yu=split(data1,data1[, input$facultad])
+    
+    yus=yu[[1]]
+    
+    
+    
+    pp=as.character(yus[,input$Programa])
+    tip=as.character(yus[,input$tipo])
+    caus=as.character(yus[,input$Causa])
+    raz=as.character(yus[,input$Razn])
+    
+    rr=data.frame(tip,pp,caus,raz)
+    
+    artt=split(rr,pp)
+    
+    tcnart=artt[[1]]
+    
+    tcnart=na.omit(tcnart)
+    
+    rr2=data.frame(tcnart$pp,tcnart$caus,tcnart$raz)
+    
+    T1 <- table(tcnart$caus,useNA = "no")
+    T1 <- prop.table(T1)
+    
+    barplot((T1),col = 'skyblue', border = 'white',cex.axis =1,cex.names=1,
+            xlab="Causas",cex.lab=1,ylab="Frecuencia relativa")
+    box()
+    
+    
+    
+
+
+
+```
+
+RAZONES
+
+```{r echo=FALSE,fig.width=8, fig.align='center',fig.height=6}
+tcnart=artt[[1]]
+    
+    tcnart=na.omit(tcnart)
+    
+    colnames(tcnart) <- c("tipo3","programa3","Causa3","razon3")
+    
+    
+    
+    reorder_size <- function(x) {
+      factor(x, levels = names(sort(table(x),decreasing = TRUE)))
+    }
+    ###%in%levels(ttt$razon)[table(ttt$razon)>1]
+    ggplot(data=tcnart,aes(x=reorder_size(razon3),fill=Causa3)) +
+      geom_histogram(stat = "count",position="dodge",fill=("skyblue"),
+                     aes(y=..count../sum(..count..)))+
+      scale_y_continuous(labels = scales::percent)+  
+     theme(axis.text.x = element_text(angle =45, hjust = 1,size=rel(0.8)),
+            axis.text.y = element_text(hjust = 1,size=rel(1)),
+            axis.text = element_text(size = 12),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+      facet_grid(~Causa3, scales="free", space="free")+
+      labs(x = "Razones ",y = "Frecuencia relativa")
+    
+```
+
+
+
+CAUSAS DE LOS PROGRAMAS PROFESIONALES DE LA FACULTAD DE ARTES
+
+
+```{r echo=FALSE}
+
+
+ inFile <- input$file
+       if (is.null(inFile))
+         return(NULL)
+         data1=read.table(inFile$datapath, header=T)
+
+       yu=split(data1,data1[, input$facultad])
+       yus=yu[[1]]
+       
+       pp=as.character(yus[,input$Programa])
+       tip=as.character(yus[,input$tipo])
+       caus=as.character(yus[,input$Causa])
+       raz=as.character(yus[,input$Razn])
+       
+       rr=data.frame(tip,pp,caus,raz)
+       
+       artt=split(rr,tip)
+       tcnart=artt[[1]]
+       
+       tcnart=na.omit(tcnart)
+       pro=as.character(tcnart$pp)
+       
+       t2=table(tcnart$caus,pro)
+       t2=prop.table(t2,2)
+       
+       u=addmargins(t2,1)
+       
+       kable(round(u,3)*100,
+             caption = "Causas de deserción en los programas 
+             profesionales de la facultad de artes y humanidades")
+```
+
+
+
+
+
+RAZONES DE LOS PROGRAMAS PROFESIO DE LA FACULTAD DE ARTES
+```{r echo=FALSE}
+
+       t2=table(tcnart$raz,pro)
+       t2=prop.table(t2,2)
+       
+       u=addmargins(t2,1)
+       
+       kable(round(u,3)*100,
+             caption = "Razones de deserción  en los programas 
+             profesionales de la facultad de artes y humanidades")
+```
+
+
+INGENIERIA EN DISEÑO
+
+
+
+
+```{r echo=FALSE,fig.align='center', fig.width=8}
+
+inFile <- input$file
+    if (is.null(inFile))
+      return(NULL)
+    data1=read.table(inFile$datapath, header=T)
+    
+    yu=split(data1,data1[, input$facultad])
+    
+    yus=yu[[1]]
+    
+    
+    
+    pp=as.character(yus[,input$Programa])
+    tip=as.character(yus[,input$tipo])
+    caus=as.character(yus[,input$Causa])
+    raz=as.character(yus[,input$Razn])
+    
+    rr=data.frame(tip,pp,caus,raz)
+    
+    artt=split(rr,pp)
+    
+    tcnart=artt[[5]]
+    
+    tcnart=na.omit(tcnart)
+    
+    rr2=data.frame(tcnart$pp,tcnart$caus,tcnart$raz)
+    
+    T1 <- table(tcnart$caus,useNA = "no")
+    T1 <- prop.table(T1)
+    
+    barplot((T1),col = 'skyblue', border = 'white',cex.axis =1,cex.names=1,
+            xlab="Causas",cex.lab=1,ylab="Frecuencia relativa")
+    box()
+    
+   
+```
+
+
+RAZONES
+
+```{r echo=FALSE, fig.width=8, fig.align='center',fig.height=6}
+ 
+    
+     tcnart=artt[[5]]
+    
+    tcnart=na.omit(tcnart)
+    
+    colnames(tcnart) <- c("tipo3","programa3","Causa3","razon3")
+    
+    
+    reorder_size <- function(x) {
+      factor(x, levels = names(sort(table(x),decreasing = TRUE)))
+    }
+    ###%in%levels(ttt$razon)[table(ttt$razon)>1]
+    ggplot(data=tcnart,aes(x=reorder_size(razon3),fill=Causa3)) +
+      geom_histogram(stat = "count",position="dodge",fill=("skyblue"),
+                     aes(y=..count../sum(..count..)))+
+      scale_y_continuous(labels = scales::percent)+  
+     theme(axis.text.x = element_text(angle =45, hjust = 1,size=rel(0.8)),
+            axis.text.y = element_text(hjust = 1,size=rel(1)),
+            axis.text = element_text(size = 12),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+      facet_grid(~Causa3, scales="free", space="free")+
+      labs(x = "Razones ",y = "Frecuencia relativa")
+```
+
+ARTES VISUALES
+CAUSAS
+```{r echo=FALSE,fig.align='center', fig.width=8}
+ inFile <- input$file
+    if (is.null(inFile))
+      return(NULL)
+    data1=read.table(inFile$datapath, header=T)
+    
+    yu=split(data1,data1[, input$facultad])
+    
+    yus=yu[[1]]
+    
+    
+    pp=as.character(yus[,input$Programa])
+    tip=as.character(yus[,input$tipo])
+    caus=as.character(yus[,input$Causa])
+    raz=as.character(yus[,input$Razn])
+    
+    rr=data.frame(tip,pp,caus,raz)
+    
+    artt=split(rr,pp)
+    
+    tcnart=artt[[1]]
+    
+    tcnart=na.omit(tcnart)
+    
+    rr2=data.frame(tcnart$pp,tcnart$caus,tcnart$raz)
+    
+    T1 <- table(tcnart$caus,useNA = "no")
+    T1 <- prop.table(T1)
+    
+    barplot((T1),col = 'skyblue', border = 'white',cex.axis =1,cex.names=1,
+            xlab="Causas",cex.lab=1,ylab="Frecuencia relativa")
+    box()
+    
+```
+
+RAZONES
+
+```{r echo=FALSE, fig.width=8, fig.align='center',fig.height=6}
+
+
+    tcnart=na.omit(tcnart)
+    
+    colnames(tcnart) <- c("tipo3","programa3","Causa3","razon3")
+    
+    
+    reorder_size <- function(x) {
+      factor(x, levels = names(sort(table(x),decreasing = TRUE)))
+    }
+    ###%in%levels(ttt$razon)[table(ttt$razon)>1]
+    ggplot(data=tcnart,aes(x=reorder_size(razon3),fill=Causa3)) +
+      geom_histogram(stat = "count",position="dodge",fill=("skyblue"),
+                     aes(y=..count../sum(..count..)))+
+      scale_y_continuous(labels = scales::percent)+  
+      theme(axis.text.x = element_text(angle =45, hjust = 1,size=rel(0.8)),
+            axis.text.y = element_text(hjust = 1,size=rel(1)),
+            axis.text = element_text(size = 12),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+      facet_grid(~Causa3, scales="free", space="free")+
+      labs(x = "Razones ",y = "Frecuencia relativa")
+```
+ARTES DE LA GRABACIÓN
+CAUSAS
+
+```{r echo=FALSE,fig.align='center', fig.width=8}
+inFile <- input$file
+    if (is.null(inFile))
+      return(NULL)
+    data1=read.table(inFile$datapath, header=T)
+    
+    yu=split(data1,data1[, input$facultad])
+    
+    yus=yu[[1]]
+    
+    
+    
+    pp=as.character(yus[,input$Programa])
+    tip=as.character(yus[,input$tipo])
+    caus=as.character(yus[,input$Causa])
+    raz=as.character(yus[,input$Razn])
+    
+    rr=data.frame(tip,pp,caus,raz)
+    
+    artt=split(rr,pp)
+  
+    tcnart=artt[[2]]
+    
+    tcnart=na.omit(tcnart)
+   
+    rr2=data.frame(tcnart$pp,tcnart$caus,tcnart$raz)
+    
+    T1 <- table(tcnart$caus,useNA = "no")
+    T1 <- prop.table(T1)
+    
+    barplot((T1),col = 'skyblue', border = 'white',cex.axis =1,cex.names=1,
+           xlab="Causas",cex.lab=1,ylab="Frecuencia")
+    box()
+    
+    
+```
+RAZONES
+```{r echo=FALSE, fig.width=8, fig.align='center',fig.height=6}
+
+
+tcnart=na.omit(tcnart)
+    
+    colnames(tcnart) <- c("tipo3","programa3","Causa3","razon3")
+    
+    
+    
+    reorder_size <- function(x) {
+      factor(x, levels = names(sort(table(x),decreasing = TRUE)))
+    }
+    ###%in%levels(ttt$razon)[table(ttt$razon)>1]
+    ggplot(data=tcnart,aes(x=reorder_size(razon3),fill=Causa3)) +
+      geom_histogram(stat = "count",position="dodge",fill=("skyblue"),
+                     aes(y=..count../sum(..count..)))+
+      scale_y_continuous(labels = scales::percent)+  
+     theme(axis.text.x = element_text(angle =45, hjust = 1,size=rel(0.8)),
+            axis.text.y = element_text(hjust = 1,size=rel(1)),
+            axis.text = element_text(size = 12),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+      facet_grid(~Causa3, scales="free", space="free")+
+      labs(x = "Razones ",y = "Frecuencia relativa")
+
+```
+
+
+##Facultad de ciencias económicas
+En la sisuiente tabla y figura se ilustra el nivel de desercion en la facultad de ciencias económicas
+
+```{r echo=FALSE,fig.align='center'}
+
+       inFile <- input$file
+       if (is.null(inFile))
+         return(NULL)
+         data1=read.table(inFile$datapath, header=T)
+
+    yu=split(data1,data1[, input$facultad])
+    AYH= yu[[3]]
+    
+      Nivel=as.factor(AYH[, input$nivel])
+      tipo=as.factor(AYH[,input$tipo])
+      
+      
+      datas=data.frame(Nivel,tipo)
+      ttt=na.omit(datas)
+    
+      ggplot(data=ttt,aes(x=Nivel),fill=tipo) +
+        geom_histogram(stat = "count",position="dodge",fill=("skyblue"),
+                       aes(y=..count../sum(..count..)))+
+        scale_y_continuous(labels = scales::percent)+  
+    theme(axis.text.x = element_text(angle = 0, hjust = 1,size=rel(1)),
+            axis.text.y = element_text(hjust = 1,size=rel(1)),
+            axis.text = element_text(size = 12),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+        facet_grid(~tipo, scales="free", space="free")+
+      labs(   x = "Nivel de desercion",y = "Frecuencia relativa")
+      
+      
+      t2=table(Nivel,tipo)
+      t3=prop.table(round(t2),2)
+      t4=addmargins(t3)
+      
+      kable(round(t4,4)*100,caption = "Nivel de desercion en la facultad de ciencias económicas")
+
+
+```
+
+Causas en la facultad de ciencias económicas
+
+```{r echo=FALSE, fig.align='center', fig.width=8 }
+
+    yu=split(data1,data1[, input$facultad])
+    AYH= yu[[3]]
+    
+    Causas = as.factor(AYH[, input$Causa])
+    Razns = as.factor(AYH[, input$Razn])
+    
+    
+    T1 <- table(Razns,Causas,useNA = "no")
+    T1 <- prop.table(T1)
+    
+    barplot(colSums(T1),col = 'skyblue', border = 'white',cex.axis = 1,cex.names=1,
+            xlab="Causas ",cex.lab=1,ylab="Frecuencia relativa")
+    box()
+    
+ t2=ftable(Causas,row.vars = 1)
+    t2=data.frame(t2)
+    prop=round(t2[2]/sum(t2[2])*100,2)
+    tt11=cbind(t2,prop)
+    tt22=data.frame(tt11[ordered(tt11$Freq),])
+    colnames(tt22) <- c("Causa","Conteo","Proporcion")
+    kable(tt22,caption = "Causas de deserción en la facultad de ciencias económicas")
+
+    
+     
+```
+
+Razones  en la facultad de ciencias económicas
+
+```{r echo=FALSE, fig.width=8, fig.align='center',fig.height=6}
+
+
+    inFile <- input$file
+    if (is.null(inFile))
+      return(NULL)
+    data1=read.table(inFile$datapath, header=T)
+    
+    yu=split(data1,data1[, input$facultad])
+    
+    
+    AYH= yu[[3]]
+    #AYH=yu$Artes_y_humanidades
+    
+    
+    Causas = as.factor(AYH[, input$Causa])
+    Razns = as.factor(AYH[, input$Razn])
+    
+    #-------
+    
+    t2=ftable(Causas,Razns,row.vars = 1:2)
+    t2=data.frame(t2)
+    
+    
+    haz.cero.na=function(x){
+      ifelse(x==0,NA,x)}
+    
+    
+    datas=data.frame(Causas, Razns)
+    
+    ttt=na.omit(datas)
+    
+    
+    reorder_size <- function(x) {
+      factor(x, levels = names(sort(table(x),decreasing = TRUE)))
+    }
+    ###%in%levels(ttt$razon)[table(ttt$razon)>1]
+    ggplot(data=ttt,aes(x=reorder_size(Razns),fill=Causas)) +
+      geom_histogram(stat = "count",position="dodge",fill=("skyblue"),
+                     aes(y=..count../sum(..count..)))+
+      scale_y_continuous(labels = scales::percent)+  
+      theme(axis.text.x = element_text(angle = 60, hjust = 1,size=rel(1)),
+            axis.text.y = element_text(hjust = 1,size=rel(1)),
+            axis.text = element_text(size = 12),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+      facet_grid(~Causas, scales="free", space="free")+
+      labs(   x = "Razones ",y = "Frecuencia relativa")
+    
+```
+tabla
+
+```{r echo=FALSE}
+
+    t2=ftable(Causas,Razns,row.vars = 1:2)
+    t2=data.frame(t2)
+  
+    haz.cero.na=function(x){
+    ifelse(x==0,NA,x)}
+    
+    dataf.2=data.frame(sapply(t2[3],haz.cero.na))
+    tt=data.frame(t2,dataf.2)
+    ttt=na.omit(tt)
+    ttt=ttt[-4]
+    
+    prop=round(ttt[3]/sum(ttt[3])*100,2)
+    tt11=cbind(ttt,prop)
+    tt22=data.frame(tt11[order(tt11$Causas),])
+    colnames(tt22) <- c("Causa","Raz?n","Conteo","Proporci?n")
+    sum(tt22$Conteo)
+  kable(tt22,caption = "Razones  en la facultad de ciencias economicas")
+  
+  
+```
+
+Causas ENTRE PROGRAMAS TECNOLÓGICOS DE LA FACULTAD DE CIENCIAS ECONOMICAS
+
+```{r echo=FALSE}
+
+
+ inFile <- input$file
+       if (is.null(inFile))
+         return(NULL)
+data1=read.table(inFile$datapath, header=T)
+
+ yu=split(data1,data1[, input$facultad])
+       
+       yus=yu[[3]]
+       
+       
+       pp=as.character(yus[,input$Programa])
+       tip=as.character(yus[,input$tipo])
+       caus=as.character(yus[,input$Causa])
+      raz=as.character(yus[,input$Razn])
+       
+       rr=data.frame(tip,pp,caus,raz)
+       
+       artt=split(rr,tip)
+       tcnart=artt[[2]]
+       
+       tcnart=na.omit(tcnart)
+       
+       pro=as.character(tcnart$pp)
+     
+       t2=table(tcnart$caus,pro)
+       t2=prop.table(t2,2)
+        u=addmargins(t2,1)
+        kable(round(u,4)*100,caption = "Causas de deserción en programas tecnológicos de la facultad de ciencias económicas")
+       
+```
+
+RAZONES DE LOS PROGRAMAS TECNOLOGICOS DE LA FACULTAD DE ciencias económicas
+
+```{r echo=FALSE}
+
+       t2=table(tcnart$raz,pro)
+       t2=prop.table(t2,2)
+       
+       u=addmargins(t2,1)
+       
+       kable(round(u,3)*100,
+             caption = "Razones de deserción en programas 
+             tecnológicos de la facultad de ciencias económicas")
+```
+CALIDAD
+
+CAUSAS
+
+```{r echo=FALSE, fig.align='center', fig.width=8 }
+ inFile <- input$file
+    if (is.null(inFile))
+      return(NULL)
+    
+    data1=read.table(inFile$datapath, header=T)
+    
+    yu=split(data1,data1[, input$facultad])
+    
+    yus=yu[[3]]
+    
+    
+    
+    pp=as.character(yus[,input$Programa])
+    tip=as.character(yus[,input$tipo])
+    caus=as.character(yus[,input$Causa])
+    raz=as.character(yus[,input$Razn])
+    
+    rr=data.frame(tip,pp,caus,raz)
+    
+    artt=split(rr,pp)
+    
+    tcnart=artt[[1]]
+    
+    tcnart=na.omit(tcnart)
+    
+    rr2=data.frame(tcnart$pp,tcnart$caus,tcnart$raz)
+    
+    T1 <- table(tcnart$caus,useNA = "no")
+    T1 <- prop.table(T1)
+    
+    barplot((T1),col = 'skyblue', border = 'white',cex.axis =1,cex.names=1,
+            xlab="Causas",cex.lab=1,ylab="Frecuencia relativa")
+    box()
+    
+```
+RAZONES
+
+```{r echo=FALSE, fig.width=8, fig.align='center',fig.height=6}
+
+tcnart=na.omit(tcnart)
+    
+    colnames(tcnart) <- c("tipo3","programa3","Causa3","razon3")
+    
+    
+    
+    reorder_size <- function(x) {
+      factor(x, levels = names(sort(table(x),decreasing = TRUE)))
+    }
+    ###%in%levels(ttt$razon)[table(ttt$razon)>1]
+    ggplot(data=tcnart,aes(x=reorder_size(razon3),fill=Causa3)) +
+      geom_histogram(stat = "count",position="dodge",fill=("skyblue"), 
+                     aes(y=..count../sum(..count..)))+
+      scale_y_continuous(labels = scales::percent)+  
+theme(axis.text.x = element_text(angle =45, hjust = 1,size=rel(0.8)),
+            axis.text.y = element_text(hjust = 1,size=rel(1)),
+            axis.text = element_text(size = 12),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+      facet_grid(~Causa3, scales="free", space="free")+
+      labs(x = "Razones ",y = "Frecuencia relativa")
+
+
+
+```
+
+GESTION ADMINISTRATIVA
+CAUSAS
+```{r echo=FALSE, fig.align='center', fig.width=8}
+ inFile <- input$file
+    if (is.null(inFile))
+      return(NULL)
+    data1=read.table(inFile$datapath, header=T)
+    
+    yu=split(data1,data1[, input$facultad])
+    
+    yus=yu[[3]]
+    
+    
+    pp=as.character(yus[,input$Programa])
+    tip=as.character(yus[,input$tipo])
+    caus=as.character(yus[,input$Causa])
+    raz=as.character(yus[,input$Razn])
+    
+    rr=data.frame(tip,pp,caus,raz)
+    
+    artt=split(rr,pp)
+    
+    tcnart=artt[[2]]
+    
+    tcnart=na.omit(tcnart)
+    
+    rr2=data.frame(tcnart$pp,tcnart$caus,tcnart$raz)
+    
+    T1 <- table(tcnart$caus,useNA = "no")
+    T1 <- prop.table(T1)
+    
+    barplot((T1),col = 'skyblue', border = 'white',cex.axis=1,cex.names=1,
+            xlab="Causas",cex.lab=1,ylab="Frecuencia relativa")
+    box()
+    
+```
+
+RAZONES
+```{r echo=FALSE, fig.width=8, fig.align='center',fig.height=6}
+
+   
+    tcnart=na.omit(tcnart)
+    
+    colnames(tcnart) <- c("tipo3","programa3","Causa3","razon3")
+    
+    
+    
+    reorder_size <- function(x) {
+      factor(x, levels = names(sort(table(x),decreasing = TRUE)))
+    }
+    ###%in%levels(ttt$razon)[table(ttt$razon)>1]
+    ggplot(data=tcnart,aes(x=reorder_size(razon3),fill=Causa3)) +
+      geom_histogram(stat = "count",position="dodge",fill=("skyblue"),
+                     aes(y=..count../sum(..count..)))+
+      scale_y_continuous(labels = scales::percent)+  
+theme(axis.text.x = element_text(angle =45, hjust = 1,size=rel(0.8)),
+            axis.text.y = element_text(hjust = 1,size=rel(1)),
+            axis.text = element_text(size = 12),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+      facet_grid(~Causa3, scales="free", space="free")+
+      labs(x = "Razones ",y = "Frecuencia relativa")
+    
+
+
+```
+
+PRODUCCIÓN
+
+CAUSAS
+```{r echo=FALSE, fig.align='center', fig.width=8}
+  
+    inFile <- input$file
+    if (is.null(inFile))
+      return(NULL)
+    data1=read.table(inFile$datapath, header=T)
+    
+    yu=split(data1,data1[, input$facultad])
+    
+    yus=yu[[3]]
+    
+    
+    
+    pp=as.character(yus[,input$Programa])
+    tip=as.character(yus[,input$tipo])
+    caus=as.character(yus[,input$Causa])
+    raz=as.character(yus[,input$Razn])
+    
+    rr=data.frame(tip,pp,caus,raz)
+    
+    artt=split(rr,pp)
+    
+    tcnart=artt[[3]]
+    
+    tcnart=na.omit(tcnart)
+    
+    rr2=data.frame(tcnart$pp,tcnart$caus,tcnart$raz)
+    
+    T1 <- table(tcnart$caus,useNA = "no")
+    T1 <- prop.table(T1)
+    
+    barplot((T1),col = 'skyblue', border = 'white',cex.axis =1,cex.names=1,
+            xlab="Causas",cex.lab=1,ylab="Frecuencia relativa")
+    box()
+```
+
+RAZONES
+
+```{r echo=FALSE, fig.width=8, fig.align='center',fig.height=6}
+ tcnart=na.omit(tcnart)
+    
+    colnames(tcnart) <- c("tipo3","programa3","Causa3","razon3")
+    
+    
+    
+    reorder_size <- function(x) {
+      factor(x, levels = names(sort(table(x),decreasing = TRUE)))
+    }
+    ###%in%levels(ttt$razon)[table(ttt$razon)>1]
+    ggplot(data=tcnart,aes(x=reorder_size(razon3),fill=Causa3)) +
+      geom_histogram(stat = "count",position="dodge",fill=("skyblue"),
+                     aes(y=..count../sum(..count..)))+
+      scale_y_continuous(labels = scales::percent)+  
+     theme(axis.text.x = element_text(angle =45, hjust = 1,size=rel(0.8)),
+            axis.text.y = element_text(hjust = 1,size=rel(1)),
+            axis.text = element_text(size = 12),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+      facet_grid(~Causa3, scales="free", space="free")+
+      labs(x = "Razones ",y = "Frecuencia relativa")
+```
+COSTOS Y PRESUPUESTOS
+CAUSAS
+```{r echo=FALSE, fig.align='center', fig.width=8}
+  inFile <- input$file
+    if (is.null(inFile))
+      return(NULL)
+    data1=read.table(inFile$datapath, header=T)
+    
+    yu=split(data1,data1[, input$facultad])
+    
+    yus=yu[[3]]
+    
+    pp=as.character(yus[,input$Programa])
+    tip=as.character(yus[,input$tipo])
+    caus=as.character(yus[,input$Causa])
+    raz=as.character(yus[,input$Razn])
+    
+    rr=data.frame(tip,pp,caus,raz)
+    
+    artt=split(rr,pp)
+    
+    tcnart=artt[[5]]
+    
+    tcnart=na.omit(tcnart)
+    
+    rr2=data.frame(tcnart$pp,tcnart$caus,tcnart$raz)
+    
+    T1 <- table(tcnart$caus,useNA = "no")
+    T1 <- prop.table(T1)
+    
+    barplot((T1),col = 'skyblue', border = 'white',cex.axis =1,cex.names=1,
+            xlab="Causas",cex.lab=1,ylab="Frecuencia")
+    box()
+```
+
+RAZONES
+
+```{r echo=FALSE, fig.width=8, fig.align='center',fig.height=6}
+
+tcnart=na.omit(tcnart)
+    
+    colnames(tcnart) <- c("tipo3","programa3","Causa3","razon3")
+    
+    
+    
+    reorder_size <- function(x) {
+      factor(x, levels = names(sort(table(x),decreasing = TRUE)))
+    }
+    ###%in%levels(ttt$razon)[table(ttt$razon)>1]
+    ggplot(data=tcnart,aes(x=reorder_size(razon3),fill=Causa3)) +
+      geom_histogram(stat = "count",position="dodge",fill=("skyblue"),
+                     aes(y=..count../sum(..count..)))+
+      scale_y_continuous(labels = scales::percent)+  
+    theme(axis.text.x = element_text(angle =45, hjust = 1,size=rel(0.8)),
+            axis.text.y = element_text(hjust = 1,size=rel(1)),
+            axis.text = element_text(size = 12),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+      facet_grid(~Causa3, scales="free", space="free")+
+      labs(x = "Razones ",y = "Frecuencia relativa")
+
+
+
+```
+
+
+
+
+
+
+CAUSAS DE DESERCIÓN EN LOS PROGRAMAS PROFESIONALES DE LA FACULTAD DE ciencias economicas
+
+
+```{r echo=FALSE}
+
+
+ inFile <- input$file
+       if (is.null(inFile))
+         return(NULL)
+         data1=read.table(inFile$datapath, header=T)
+
+       yu=split(data1,data1[, input$facultad])
+       yus=yu[[3]]
+       
+       pp=as.character(yus[,input$Programa])
+       tip=as.character(yus[,input$tipo])
+       caus=as.character(yus[,input$Causa])
+       raz=as.character(yus[,input$Razn])
+       
+       rr=data.frame(tip,pp,caus,raz)
+       
+       artt=split(rr,tip)
+       tcnart=artt[[1]]
+       
+       tcnart=na.omit(tcnart)
+       pro=as.character(tcnart$pp)
+       
+       t2=table(tcnart$caus,pro)
+       t2=prop.table(t2,2)
+       
+       u=addmargins(t2,1)
+       
+       kable(round(u,3)*100,
+             caption = "Causas en programas profesionales 
+             de la facultad de ciencias económicas")
+```
+
+Razones de los programas profesionales de la facultad de ciencias económicas
+
+```{r echo=FALSE}
+
+       t2=table(tcnart$raz,pro)
+       t2=prop.table(t2,2)
+       
+       u=addmargins(t2,1)
+       
+       kable(round(u,3)*100,
+             caption = "Razones  de deserción en los programas profesionales 
+             de la facultad de ciencias económicas")
+```
+
+
+ADMINISTRACION TECNOLOGICA
+
+CAUSAS
+```{r echo=FALSE, fig.align='center', fig.width=8}
+
+
+ inFile <- input$file
+    if (is.null(inFile))
+      return(NULL)
+    data1=read.table(inFile$datapath, header=T)
+    
+    yu=split(data1,data1[, input$facultad])
+    
+    yus=yu[[3]]
+    
+    
+    
+    pp=as.character(yus[,input$Programa])
+    tip=as.character(yus[,input$tipo])
+    caus=as.character(yus[,input$Causa])
+    raz=as.character(yus[,input$Razn])
+    
+    rr=data.frame(tip,pp,caus,raz)
+    
+    artt=split(rr,pp)
+    
+    tcnart=artt[[4]]
+    
+    tcnart=na.omit(tcnart)
+    
+    rr2=data.frame(tcnart$pp,tcnart$caus,tcnart$raz)
+    
+    T1 <- table(tcnart$caus,useNA = "no")
+    T1 <- prop.table(T1)
+    
+    barplot((T1),col = 'skyblue', border = 'white',cex.axis =1,cex.names=1,
+            xlab="Causas ",cex.lab=1,ylab="Frecuencia relativa")
+    box()
+```
+
+RAZONES
+
+```{r echo=FALSE, fig.width=8, fig.align='center',fig.height=6}
+  tcnart=artt[[4]]
+    
+    tcnart=na.omit(tcnart)
+    
+    colnames(tcnart) <- c("tipo3","programa3","Causa3","razon3")
+    
+    
+    reorder_size <- function(x) {
+      factor(x, levels = names(sort(table(x),decreasing = TRUE)))
+    }
+    ###%in%levels(ttt$razon)[table(ttt$razon)>1]
+    ggplot(data=tcnart,aes(x=reorder_size(razon3),fill=Causa3)) +
+      geom_histogram(stat = "count",position="dodge",fill=("skyblue"),
+                     aes(y=..count../sum(..count..)))+
+      scale_y_continuous(labels = scales::percent)+  
+      theme(axis.text.x = element_text(angle = 45, hjust = 1,size=16),
+            axis.text.y = element_text(angle = 0, hjust = 1,size=16),
+            axis.text = element_text(size = 10),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+      facet_grid(~Causa3, scales="free", space="free")+
+      labs(x = "Razones ",y = "Frecuencia relativa")
+    
+```
+
+
+CONTADURIA PUBLICA
+
+CAUSAS
+```{r echo=FALSE, fig.align='center', fig.width=8}
+
+  inFile <- input$file
+    if (is.null(inFile))
+      return(NULL)
+    data1=read.table(inFile$datapath, header=T)
+    
+    yu=split(data1,data1[, input$facultad])
+    
+    yus=yu[[3]]
+   
+    
+    pp=as.character(yus[,input$Programa])
+    tip=as.character(yus[,input$tipo])
+    caus=as.character(yus[,input$Causa])
+    raz=as.character(yus[,input$Razn])
+    
+    rr=data.frame(tip,pp,caus,raz)
+    
+    artt=split(rr,pp)
+    
+    tcnart=artt[[6]]
+    
+    tcnart=na.omit(tcnart)
+    
+    rr2=data.frame(tcnart$pp,tcnart$caus,tcnart$raz)
+    
+    T1 <- table(tcnart$caus,useNA = "no")
+    T1 <- prop.table(T1)
+    
+    barplot((T1),col = 'skyblue', border = 'white',cex.axis =1,cex.names=1,
+            xlab="Causas",cex.lab=1,ylab="Frecuencia relativa")
+    box()
+    
+```
+
+RAZONES
+
+```{r echo=FALSE, fig.width=8, fig.align='center',fig.height=6}
+
+tcnart=artt[[6]]
+    
+    tcnart=na.omit(tcnart)
+    
+    colnames(tcnart) <- c("tipo3","programa3","Causa3","razon3")
+    
+    reorder_size <- function(x) {
+      factor(x, levels = names(sort(table(x),decreasing = TRUE)))
+    }
+    ###%in%levels(ttt$razon)[table(ttt$razon)>1]
+    ggplot(data=tcnart,aes(x=reorder_size(razon3),fill=Causa3)) +
+      geom_histogram(stat = "count",position="dodge",fill=("skyblue"),
+                     aes(y=..count../sum(..count..)))+
+      scale_y_continuous(labels = scales::percent)+  
+      theme(axis.text.x = element_text(angle = 45, hjust = 1,size=16),
+            axis.text.y = element_text(angle = 0, hjust = 1,size=16),
+            axis.text = element_text(size = 10),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+      facet_grid(~Causa3, scales="free", space="free")+
+      labs(x = "Razones ",y = "Frecuencia relativa")
+
+```
+
+
+Ingeniería financiera y de negocios
+CAUSAS
+```{r echo=FALSE, fig.align='center', fig.width=8}
+
+
+
+inFile <- input$file
+    if (is.null(inFile))
+      return(NULL)
+    data1=read.table(inFile$datapath, header=T)
+    
+    yu=split(data1,data1[, input$facultad])
+    
+    yus=yu[[3]]
+    
+    
+    
+    pp=as.character(yus[,input$Programa])
+    tip=as.character(yus[,input$tipo])
+    caus=as.character(yus[,input$Causa])
+    raz=as.character(yus[,input$Razn])
+    
+    rr=data.frame(tip,pp,caus,raz)
+    
+    artt=split(rr,pp)
+    
+    tcnart=artt[[7]]
+    
+    tcnart=na.omit(tcnart)
+    
+    rr2=data.frame(tcnart$pp,tcnart$caus,tcnart$raz)
+    
+    T1 <- table(tcnart$caus,useNA = "no")
+    T1 <- prop.table(T1)
+    
+    barplot((T1),col = 'skyblue', border = 'white',cex.axis =1,cex.names=1,
+            xlab="Causas",cex.lab=1,ylab="Frecuencia relativa")
+    box()
+```
+
+RAZONES
+
+```{r echo=FALSE, fig.width=8, fig.align='center',fig.height=6}
+tcnart=artt[[7]]
+    
+    tcnart=na.omit(tcnart)
+    
+    colnames(tcnart) <- c("tipo3","programa3","Causa3","razon3")
+    
+    
+    
+    reorder_size <- function(x) {
+      factor(x, levels = names(sort(table(x),decreasing = TRUE)))
+    }
+    ###%in%levels(ttt$razon)[table(ttt$razon)>1]
+    ggplot(data=tcnart,aes(x=reorder_size(razon3),fill=Causa3)) +
+      geom_histogram(stat = "count",position="dodge",fill=("skyblue"),
+                     aes(y=..count../sum(..count..)))+
+      scale_y_continuous(labels = scales::percent)+  
+      theme(axis.text.x = element_text(angle = 45, hjust = 1,size=16),
+            axis.text.y = element_text(angle = 0, hjust = 1,size=16),
+            axis.text = element_text(size = 10),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+      facet_grid(~Causa3, scales="free", space="free")+
+      labs(x = "Razones ",y = "Frecuencia relativa")
+    
+```
+
+INGENIERIA DE PRODUCCION
+
+CAUSAS
+```{r echo=FALSE, fig.align='center', fig.width=8}
+inFile <- input$file
+    if (is.null(inFile))
+      return(NULL)
+    data1=read.table(inFile$datapath, header=T)
+    
+    yu=split(data1,data1[, input$facultad])
+    
+    yus=yu[[3]]
+    
+    
+    
+    pp=as.character(yus[,input$Programa])
+    tip=as.character(yus[,input$tipo])
+    caus=as.character(yus[,input$Causa])
+    raz=as.character(yus[,input$Razn])
+    
+    rr=data.frame(tip,pp,caus,raz)
+    
+    artt=split(rr,pp)
+    
+    tcnart=artt[[8]]
+    
+    tcnart=na.omit(tcnart)
+    
+    rr2=data.frame(tcnart$pp,tcnart$caus,tcnart$raz)
+    
+    T1 <- table(tcnart$caus,useNA = "no")
+    T1 <- prop.table(T1)
+    
+    barplot((T1),col = 'skyblue', border = 'white',cex.axis =1,cex.names=1,
+            xlab="Causas",cex.lab=1,ylab="Frecuencia relativa")
+    box()
+```
+
+RAZONES
+
+```{r echo=FALSE, fig.width=8, fig.align='center',fig.height=6}
+
+  tcnart=artt[[8]]
+    
+    tcnart=na.omit(tcnart)
+    
+    colnames(tcnart) <- c("tipo3","programa3","Causa3","razon3")
+    
+    
+    reorder_size <- function(x) {
+      factor(x, levels = names(sort(table(x),decreasing = TRUE)))
+    }
+    ###%in%levels(ttt$razon)[table(ttt$razon)>1]
+    ggplot(data=tcnart,aes(x=reorder_size(razon3),fill=Causa3)) +
+      geom_histogram(stat = "count",position="dodge",fill=("skyblue"),
+                     aes(y=..count../sum(..count..)))+
+      scale_y_continuous(labels = scales::percent)+  
+      theme(axis.text.x = element_text(angle = 45, hjust = 1,size=16),
+            axis.text.y = element_text(angle = 0, hjust = 1,size=16),
+            axis.text = element_text(size = 10),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+      facet_grid(~Causa3, scales="free", space="free")+
+      labs(x = "Razones ",y = "Frecuencia relativa")
+    
+```
+
+
+## Facultad de ciencias exactas
+
+```{r echo=FALSE, fig.align='center'}
+
+       inFile <- input$file
+       if (is.null(inFile))
+         return(NULL)
+         data1=read.table(inFile$datapath, header=T)
+
+    yu=split(data1,data1[, input$facultad])
+    AYH= yu[[2]]
+    
+      Nivel=as.factor(AYH[, input$nivel])
+      tipo=as.factor(AYH[,input$tipo])
+      
+      
+      datas=data.frame(Nivel,tipo)
+      ttt=na.omit(datas)
+    
+      ggplot(data=ttt,aes(x=Nivel),fill=tipo) +
+        geom_histogram(stat = "count",position="dodge",fill=("skyblue"),
+                       aes(y=..count../sum(..count..)))+
+        scale_y_continuous(labels = scales::percent)+  
+theme(axis.text.x = element_text(angle =0, hjust = 1,size=rel(0.8)),
+            axis.text.y = element_text(hjust = 1,size=rel(1)),
+            axis.text = element_text(size = 12),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+        facet_grid(~tipo, scales="free", space="free")+
+      labs(   x = "Razones ",y = "Frecuencia relativa")
+      
+      
+      t2=table(Nivel,tipo)
+      t3=prop.table(round(t2),2)
+      t4=addmargins(t3)
+      
+      kable(round(t4,4)*100,caption = "Nivel de desercion en la facultad de ciencias económicas")
+
+
+```
+
+En el presente texto se ilustra las Causas en la facultad de ciencias exactas
+
+```{r echo=FALSE, fig.align='center',  fig.width=8 }
+
+inFile <- input$file
+       if (is.null(inFile))
+         return(NULL)
+         data1=read.table(inFile$datapath, header=T)
+
+    
+    yu=split(data1,data1[, input$facultad])
+    AYH= yu[[2]]
+    
+    Causas = as.factor(AYH[, input$Causa])
+    Razns = as.factor(AYH[, input$Razn])
+    
+    
+    T1 <- table(Razns,Causas,useNA = "no")
+    T1 <- prop.table(T1)
+    
+    barplot(colSums(T1),col = 'skyblue', border = 'white',cex.axis = 1,cex.names=1,
+            xlab="Causas ",cex.lab=1,ylab="Frecuencia relativa")
+    box()
+    
+ t2=ftable(Causas,row.vars = 1)
+    t2=data.frame(t2)
+    prop=round(t2[2]/sum(t2[2])*100,2)
+    tt11=cbind(t2,prop)
+    tt22=data.frame(tt11[ordered(tt11$Freq),])
+    colnames(tt22) <- c("Causa","Conteo","Proporcion")
+    kable(tt22,caption = "Causas de deserción en la facultad de ciencias exactas")
+
+```
+
+
+Causas ENTRE PROGRAMAS TECNOLÓGICOS DE LA FACULTAD DE CIENCIAS EXACTAS
+
+
+```{r echo=FALSE}
+
+
+ inFile <- input$file
+       if (is.null(inFile))
+         return(NULL)
+data1=read.table(inFile$datapath, header=T)
+
+ yu=split(data1,data1[, input$facultad])
+       
+       yus=yu[[2]]
+       
+       
+       
+       pp=as.character(yus[,input$Programa])
+       tip=as.character(yus[,input$tipo])
+       caus=as.character(yus[,input$Causa])
+      raz=as.character(yus[,input$Razn])
+       
+       rr=data.frame(tip,pp,caus,raz)
+       
+       artt=split(rr,tip)
+       tcnart=artt[[2]]
+       
+       tcnart=na.omit(tcnart)
+       
+       pro=as.character(tcnart$pp)
+     
+       
+       t2=table(tcnart$caus,pro)
+       t2=prop.table(t2,2)
+        u=addmargins(t2,1)
+       
+       kable(round(u,4)*100,
+             caption = "Causas en programas 
+             tecnológicos de la facultad de ciencias exactas")
+       
+       
+       
+```
+
+
+Razones  de la facultad de ciencias exactas
+
+```{r echo=FALSE, fig.width=8, fig.align='center',fig.height=6}
+
+ t2=ftable(Causas,Razns,row.vars = 1:2)
+    t2=data.frame(t2)
+    
+    
+    haz.cero.na=function(x){
+      ifelse(x==0,NA,x)}
+    
+    
+    datas=data.frame(Causas, Razns)
+    
+    ttt=na.omit(datas)
+  
+      reorder_size <- function(x) {
+      factor(x, levels = names(sort(table(x),decreasing = TRUE)))
+    }
+    ###%in%levels(ttt$razon)[table(ttt$razon)>1]
+    ggplot(data=ttt,aes(x=reorder_size(Razns),fill=Causas)) +
+      geom_histogram(stat = "count",position="dodge",fill=("skyblue"),
+                     aes(y=..count../sum(..count..)))+
+      scale_y_continuous(labels = scales::percent)+  
+    theme(axis.text.x = element_text(angle = 45, hjust = 1,size=rel(1)),
+            axis.text.y = element_text(hjust = 1,size=rel(1)),
+            axis.text = element_text(size = 12),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+      facet_grid(~Causas, scales="free", space="free")+
+      labs(   x = "Razones ",y = "Frecuencia relativa")
+    
+    
+    
+    
+    
+    
+    t2=ftable(Causas,Razns,row.vars = 1:2)
+    t2=data.frame(t2)
+  
+    haz.cero.na=function(x){
+    ifelse(x==0,NA,x)}
+    
+    dataf.2=data.frame(sapply(t2[3],haz.cero.na))
+    tt=data.frame(t2,dataf.2)
+    ttt=na.omit(tt)
+    ttt=ttt[-4]
+    
+    prop=round(ttt[3]/sum(ttt[3])*100,2)
+    tt11=cbind(ttt,prop)
+    tt22=data.frame(tt11[order(tt11$Causas),])
+    colnames(tt22) <- c("Causa","Raz?n","Conteo","Proporci?n")
+    sum(tt22$Conteo)
+  kable(tt22,caption = "Razones de deserción en la facultad de ciencias exactas")
+  
+  
+```
+
+Razones  DE LOS PROGRAMAS TECNOLOGICOS DE LA FACULTAD DE CIENCIAS EXACTAS
+
+```{r echo=FALSE}
+
+       t2=table(tcnart$raz,pro)
+       t2=prop.table(t2,2)
+       
+       u=addmargins(t2,1)
+       
+       kable(round(u,3)*100,caption = "Causas en programas tecnológicos de la facultad de ciencias exactas")
+```
+Acabados Arquitectónicos
+CAUSAS
+```{r echo=FALSE, fig.align='center', fig.width=8}
+inFile <- input$file
+    if (is.null(inFile))
+      return(NULL)
+    data1=read.table(inFile$datapath, header=T)
+    
+    yu=split(data1,data1[, input$facultad])
+    
+    yus=yu[[2]]
+    
+    pp=as.character(yus[,input$Programa])
+    tip=as.character(yus[,input$tipo])
+    caus=as.character(yus[,input$Causa])
+    raz=as.character(yus[,input$Razn])
+    
+    rr=data.frame(tip,pp,caus,raz)
+    
+    artt=split(rr,pp)
+    
+    tcnart=artt[[1]]
+    
+    tcnart=na.omit(tcnart)
+    
+    rr2=data.frame(tcnart$pp,tcnart$caus,tcnart$raz)
+    
+    T1 <- table(tcnart$caus,useNA = "no")
+    T1 <- prop.table(T1)
+    
+    barplot((T1),col = 'skyblue', border = 'white',cex.axis =1,cex.names=1,
+            xlab="Causas",cex.lab=1,ylab="Frecuencia relativa")
+    box()
+    
+    
+```
+
+RAZONES
+
+```{r echo=FALSE, fig.width=8, fig.align='center',fig.height=6}
+ tcnart=artt[[1]]
+    
+    tcnart=na.omit(tcnart)
+    
+    colnames(tcnart) <- c("tipo3","programa3","Causa3","razon3")
+    
+    
+    reorder_size <- function(x) {
+      factor(x, levels = names(sort(table(x),decreasing = TRUE)))
+    }
+    ###%in%levels(ttt$razon)[table(ttt$razon)>1]
+    ggplot(data=tcnart,aes(x=reorder_size(razon3),fill=Causa3)) +
+      geom_histogram(stat = "count",position="dodge",fill=("skyblue"),
+                     aes(y=..count../sum(..count..)))+
+      scale_y_continuous(labels = scales::percent)+  
+      theme(axis.text.x = element_text(angle = 45, hjust = 1,size=16),
+            axis.text.y = element_text(angle = 0, hjust = 1,size=16),
+            axis.text = element_text(size = 10),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+      facet_grid(~Causa3, scales="free", space="free")+
+      labs(x = "Razones ",y = "Frecuencia relativa")
+```
+ Mantenimiento de equipo biomédico
+CAUSAS
+```{r echo=FALSE, fig.align='center', fig.width=8}
+ inFile <- input$file
+    if (is.null(inFile))
+      return(NULL)
+    data1=read.table(inFile$datapath, header=T)
+    
+    yu=split(data1,data1[, input$facultad])
+    
+    yus=yu[[2]]
+    
+    
+    pp=as.character(yus[,input$Programa])
+    tip=as.character(yus[,input$tipo])
+    caus=as.character(yus[,input$Causa])
+    raz=as.character(yus[,input$Razn])
+    
+    rr=data.frame(tip,pp,caus,raz)
+    
+    artt=split(rr,pp)
+    
+    tcnart=artt[[2]]
+    
+    tcnart=na.omit(tcnart)
+    
+    rr2=data.frame(tcnart$pp,tcnart$caus,tcnart$raz)
+    
+    T1 <- table(tcnart$caus,useNA = "no")
+    T1 <- prop.table(T1)
+    
+    barplot((T1),col = 'skyblue', border = 'white',cex.axis =1,cex.names=1,
+            xlab="Causas",cex.lab=1,ylab="Frecuencia relativa")
+    box()
+    
+    
+```
+
+RAZONES
+
+```{r echo=FALSE, fig.width=8, fig.align='center',fig.height=6}
+tcnart=artt[[2]]
+    
+    tcnart=na.omit(tcnart)
+    
+    colnames(tcnart) <- c("tipo3","programa3","Causa3","razon3")
+    
+    
+    reorder_size <- function(x) {
+      factor(x, levels = names(sort(table(x),decreasing = TRUE)))
+    }
+    ###%in%levels(ttt$razon)[table(ttt$razon)>1]
+    ggplot(data=tcnart,aes(x=reorder_size(razon3),fill=Causa3)) +
+      geom_histogram(stat = "count",position="dodge",fill=("skyblue"),
+                     aes(y=..count../sum(..count..)))+
+      scale_y_continuous(labels = scales::percent)+  
+      theme(axis.text.x = element_text(angle = 45, hjust = 1,size=16),
+            axis.text.y = element_text(angle = 0, hjust = 1,size=16),
+            axis.text = element_text(size = 10),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+      facet_grid(~Causa3, scales="free", space="free")+
+      labs(x = "Razones ",y = "Frecuencia relativa")
+    
+```
+
+Causas EN LOS PROGRAMAS PROFESIONALES DE LA FACULTAD DE CIENCIAS EXACTAS
+
+
+```{r echo=FALSE}
+
+
+ inFile <- input$file
+       if (is.null(inFile))
+         return(NULL)
+         data1=read.table(inFile$datapath, header=T)
+
+       yu=split(data1,data1[, input$facultad])
+       yus=yu[[2]]
+       
+       pp=as.character(yus[,input$Programa])
+       tip=as.character(yus[,input$tipo])
+       caus=as.character(yus[,input$Causa])
+       raz=as.character(yus[,input$Razn])
+       
+       rr=data.frame(tip,pp,caus,raz)
+       
+       artt=split(rr,tip)
+       tcnart=artt[[1]]
+       
+       tcnart=na.omit(tcnart)
+       pro=as.character(tcnart$pp)
+       
+       t2=table(tcnart$caus,pro)
+       t2=prop.table(t2,2)
+       
+       u=addmargins(t2,1)
+       
+       kable(round(u,3)*100,caption = "Causas de deserción en programas 
+             profesionales de la facultad de ciencias exactas")
+```
+
+
+
+
+
+RAZONES DE LOS PROGRAMAS PROFESIO DE LA FACULTAD DE ciencias exactas
+
+```{r echo=FALSE}
+
+       t2=table(tcnart$raz,pro)
+       t2=prop.table(t2,2)
+       
+       u=addmargins(t2,1)
+       
+       kable(round(u,3)*100,caption = "Razones  en programas profesionales de la facultad de ciencias exactas")
+```
+
+
+INGENIERIA BIOMEDICA
+CAUSAS
+```{r echo=FALSE, fig.align='center', fig.width=8}
+  inFile <- input$file
+    if (is.null(inFile))
+      return(NULL)
+    data1=read.table(inFile$datapath, header=T)
+    
+    yu=split(data1,data1[, input$facultad])
+    
+    yus=yu[[2]]
+    
+    pp=as.character(yus[,input$Programa])
+    tip=as.character(yus[,input$tipo])
+    caus=as.character(yus[,input$Causa])
+    raz=as.character(yus[,input$Razn])
+    
+    rr=data.frame(tip,pp,caus,raz)
+    
+    artt=split(rr,pp)
+    
+    tcnart=artt[[3]]
+    
+    tcnart=na.omit(tcnart)
+    
+    rr2=data.frame(tcnart$pp,tcnart$caus,tcnart$raz)
+    
+    T1 <- table(tcnart$caus,useNA = "no")
+    T1 <- prop.table(T1)
+    
+    barplot((T1),col = 'skyblue', border = 'white',cex.axis =1,cex.names=1,
+            xlab="Causas",cex.lab=1,ylab="Frecuencia relativa")
+    box()
+    
+```
+
+RAZONES
+
+```{r echo=FALSE, fig.width=8, fig.align='center',fig.height=6}
+ tcnart=artt[[3]]
+    
+    tcnart=na.omit(tcnart)
+    
+    colnames(tcnart) <- c("tipo3","programa3","Causa3","razon3")
+    
+    reorder_size <- function(x) {
+      factor(x, levels = names(sort(table(x),decreasing = TRUE)))
+    }
+    ###%in%levels(ttt$razon)[table(ttt$razon)>1]
+    ggplot(data=tcnart,aes(x=reorder_size(razon3),fill=Causa3)) +
+      geom_histogram(stat = "count",position="dodge",fill=("skyblue"),
+                     aes(y=..count../sum(..count..)))+
+      scale_y_continuous(labels = scales::percent)+  
+      theme(axis.text.x = element_text(angle = 45, hjust = 1,size=16),
+            axis.text.y = element_text(angle = 0, hjust = 1,size=16),
+            axis.text = element_text(size = 10),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+      facet_grid(~Causa3, scales="free", space="free")+
+      labs(x = "Razones ",y = "Frecuencia relativa")
+```
+QUIMICA INDUSTRIAL
+CAUSAS
+```{r echo=FALSE, fig.align='center', fig.width=8}
+inFile <- input$file
+    if (is.null(inFile))
+      return(NULL)
+    data1=read.table(inFile$datapath, header=T)
+    
+    yu=split(data1,data1[, input$facultad])
+    
+    yus=yu[[2]]
+    
+    
+    pp=as.character(yus[,input$Programa])
+    tip=as.character(yus[,input$tipo])
+    caus=as.character(yus[,input$Causa])
+    raz=as.character(yus[,input$Razn])
+    
+    rr=data.frame(tip,pp,caus,raz)
+    
+    artt=split(rr,pp)
+    
+    tcnart=artt[[4]]
+    
+    tcnart=na.omit(tcnart)
+    
+    rr2=data.frame(tcnart$pp,tcnart$caus,tcnart$raz)
+    
+    T1 <- table(tcnart$caus,useNA = "no")
+    T1 <- prop.table(T1)
+    
+    barplot((T1),col = 'skyblue', border = 'white',cex.axis =1,cex.names=1,
+            xlab="Causas",cex.lab=1,ylab="Frecuencia relativa")
+    box()
+    
+    
+```
+
+RAZONES
+
+```{r echo=FALSE, fig.width=8, fig.align='center',fig.height=6}
+tcnart=artt[[4]]
+    
+    tcnart=na.omit(tcnart)
+    
+    colnames(tcnart) <- c("tipo3","programa3","Causa3","razon3")
+    
+    
+    reorder_size <- function(x) {
+      factor(x, levels = names(sort(table(x),decreasing = TRUE)))
+    }
+    ###%in%levels(ttt$razon)[table(ttt$razon)>1]
+    ggplot(data=tcnart,aes(x=reorder_size(razon3),fill=Causa3)) +
+      geom_histogram(stat = "count",position="dodge",fill=("skyblue"),
+                     aes(y=..count../sum(..count..)))+
+      scale_y_continuous(labels = scales::percent)+  
+      theme(axis.text.x = element_text(angle = 45, hjust = 1,size=16),
+            axis.text.y = element_text(angle = 0, hjust = 1,size=16),
+            axis.text = element_text(size = 10),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+      facet_grid(~Causa3, scales="free", space="free")+
+      labs(x = "Razones ",y = "Frecuencia relativa")
+```
+
+
+## Facultad de ingenierias
+
+```{r echo=FALSE, fig.width=8, fig.align='center',fig.height=6}
+
+       inFile <- input$file
+       if (is.null(inFile))
+         return(NULL)
+         data1=read.table(inFile$datapath, header=T)
+
+    yu=split(data1,data1[, input$facultad])
+    AYH= yu[[4]]
+    
+      Nivel=as.factor(AYH[, input$nivel])
+      tipo=as.factor(AYH[,input$tipo])
+      
+      
+      datas=data.frame(Nivel,tipo)
+      ttt=na.omit(datas)
+    
+      ggplot(data=ttt,aes(x=Nivel),fill=tipo) +
+        geom_histogram(stat = "count",position="dodge",fill=("skyblue"),
+                       aes(y=..count../sum(..count..)))+
+        scale_y_continuous(labels = scales::percent)+  
+        theme(axis.text.x = element_text(angle =0, hjust = 1,size=rel(1)),
+            axis.text.y = element_text(hjust = 1,size=rel(1)),
+            axis.text = element_text(size = 12),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+        facet_grid(~tipo, scales="free", space="free")+
+      labs(   x = "Razones ",y = "Frecuencia relativa")
+      
+      
+      t2=table(Nivel,tipo)
+      t3=prop.table(round(t2),2)
+      t4=addmargins(t3)
+      
+      kable(round(t4,4)*100,caption = "Nivel en la facultad de ciencias económicas")
+
+
+```
+
+Se ilustra las Causas en la facultad de ingenierias
+
+```{r echo=FALSE, fig.align='center', fig.width=8 }
+
+
+inFile <- input$file
+       if (is.null(inFile))
+         return(NULL)
+         data1=read.table(inFile$datapath, header=T)
+
+    
+    yu=split(data1,data1[, input$facultad])
+    AYH= yu[[4]]
+    
+    Causas = as.factor(AYH[, input$Causa])
+    Razns = as.factor(AYH[, input$Razn])
+    
+    
+    T1 <- table(Razns,Causas,useNA = "no")
+    T1 <- prop.table(T1)
+    
+    barplot(colSums(T1),col = 'skyblue', border = 'white',cex.axis = 1,cex.names=1,
+            xlab="Causas ",cex.lab=1,ylab="Frecuencia relativa")
+    box()
+    
+ t2=ftable(Causas,row.vars = 1)
+    t2=data.frame(t2)
+    prop=round(t2[2]/sum(t2[2])*100,2)
+    tt11=cbind(t2,prop)
+    tt22=data.frame(tt11[ordered(tt11$Freq),])
+    colnames(tt22) <- c("Causa","Conteo","Proporcion")
+    kable(tt22,caption = "Causas en la facultad de ingenierias")
+
+    
+     
+```
+
+Razones  de la facultad de ingenierias
+
+```{r echo=FALSE, fig.width=8, fig.align='center',fig.height=6}
+
+ t2=ftable(Causas,Razns,row.vars = 1:2)
+    t2=data.frame(t2)
+    
+    
+    haz.cero.na=function(x){
+      ifelse(x==0,NA,x)}
+    
+    
+    datas=data.frame(Causas, Razns)
+    
+    ttt=na.omit(datas)
+  
+      reorder_size <- function(x) {
+      factor(x, levels = names(sort(table(x),decreasing = TRUE)))
+    }
+    ###%in%levels(ttt$razon)[table(ttt$razon)>1]
+    ggplot(data=ttt,aes(x=reorder_size(Razns),fill=Causas)) +
+      geom_histogram(stat = "count",position="dodge",fill=("skyblue"),
+                     aes(y=..count../sum(..count..)))+
+      scale_y_continuous(labels = scales::percent)+  
+     theme(axis.text.x = element_text(angle = 45, hjust = 1,size=rel(1)),
+            axis.text.y = element_text(hjust = 1,size=rel(1)),
+            axis.text = element_text(size = 12),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+      facet_grid(~Causas, scales="free", space="free")+
+      labs(   x = "Razones ",y = "Frecuencia relativa")
+    
+    t2=ftable(Causas,Razns,row.vars = 1:2)
+    t2=data.frame(t2)
+  
+    haz.cero.na=function(x){
+    ifelse(x==0,NA,x)}
+    
+    dataf.2=data.frame(sapply(t2[3],haz.cero.na))
+    tt=data.frame(t2,dataf.2)
+    ttt=na.omit(tt)
+    ttt=ttt[-4]
+    
+    prop=round(ttt[3]/sum(ttt[3])*100,2)
+    tt11=cbind(ttt,prop)
+    tt22=data.frame(tt11[order(tt11$Causas),])
+    colnames(tt22) <- c("Causa","Raz?n","Conteo","Proporci?n")
+    sum(tt22$Conteo)
+  kable(tt22, caption="Razones  en la facultad de ingenierias")
+  
+  
+```
+
+
+Causas ENTRE PROGRAMAS TECNOLÓGICOS DE LA FACULTAD DE ingenierias
+
+
+```{r echo=FALSE}
+
+
+ inFile <- input$file
+       if (is.null(inFile))
+         return(NULL)
+data1=read.table(inFile$datapath, header=T)
+
+ yu=split(data1,data1[, input$facultad])
+       
+       yus=yu[[4]]
+       
+       
+       
+       pp=as.character(yus[,input$Programa])
+       tip=as.character(yus[,input$tipo])
+       caus=as.character(yus[,input$Causa])
+      raz=as.character(yus[,input$Razn])
+       
+       rr=data.frame(tip,pp,caus,raz)
+       
+       artt=split(rr,tip)
+       tcnart=artt[[2]]
+       
+       tcnart=na.omit(tcnart)
+       
+       pro=as.character(tcnart$pp)
+     
+       
+       t2=table(tcnart$caus,pro)
+       t2=prop.table(t2,2)
+        u=addmargins(t2,1)
+       
+       kable(round(u,4)*100,caption = "Causas en los programas tecnologicos de la facultad de ingenierias")
+       
+       
+       
+```
+
+Razones  EN LOS PROGRAMAS TECNOLOGICOS DE LA FACULTAD DE INGENIERIAs
+```{r echo=FALSE}
+
+       t2=table(tcnart$raz,pro)
+       t2=prop.table(t2,2)
+       
+       u=addmargins(t2,1)
+       
+       kable(round(u,3)*100,caption = "Razones  en los programas tecnologicos de la facultad de ingenierias")
+```
+
+electromecanica
+CAUSAS
+```{r echo=FALSE, fig.align='center', fig.width=8}
+ inFile <- input$file
+    if (is.null(inFile))
+      return(NULL)
+    data1=read.table(inFile$datapath, header=T)
+    
+    yu=split(data1,data1[, input$facultad])
+    
+    yus=yu[[4]]
+    
+    
+    
+    pp=as.character(yus[,input$Programa])
+    tip=as.character(yus[,input$tipo])
+    caus=as.character(yus[,input$Causa])
+    raz=as.character(yus[,input$Razn])
+    
+    rr=data.frame(tip,pp,caus,raz)
+    
+    artt=split(rr,pp)
+    
+    tcnart=artt[[1]]
+    
+    tcnart=na.omit(tcnart)
+    
+    rr2=data.frame(tcnart$pp,tcnart$caus,tcnart$raz)
+    
+    T1 <- table(tcnart$caus,useNA = "no")
+    T1 <- prop.table(T1)
+    
+    barplot((T1),col = 'skyblue', border = 'white',cex.axis =1,cex.names=1,
+            xlab="Causas ",cex.lab=1,ylab="Frecuencia")
+    box()
+    
+```
+
+RAZONES
+
+```{r echo=FALSE, fig.width=8, fig.align='center',fig.height=6}
+  tcnart=artt[[1]]
+    
+    tcnart=na.omit(tcnart)
+    
+    colnames(tcnart) <- c("tipo3","programa3","Causa3","razon3")
+    
+    reorder_size <- function(x) {
+      factor(x, levels = names(sort(table(x),decreasing = TRUE)))
+    }
+    ###%in%levels(ttt$razon)[table(ttt$razon)>1]
+    ggplot(data=tcnart,aes(x=reorder_size(razon3),fill=Causa3)) +
+      geom_histogram(stat = "count",position="dodge",fill=("skyblue"),
+                     aes(y=..count../sum(..count..)))+
+      scale_y_continuous(labels = scales::percent)+  
+      theme(axis.text.x = element_text(angle = 45, hjust = 1,size=16),
+            axis.text.y = element_text(angle = 0, hjust = 1,size=16),
+            axis.text = element_text(size = 10),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+      facet_grid(~Causa3, scales="free", space="free")+
+      labs(x = "Razones  ",y = "Frecuencia relativa")
+```
+
+ELECTRONICA
+CAUSAS
+```{r echo=FALSE, fig.align='center', fig.width=8}
+ inFile <- input$file
+    if (is.null(inFile))
+      return(NULL)
+    data1=read.table(inFile$datapath, header=T)
+    
+    yu=split(data1,data1[, input$facultad])
+    
+    yus=yu[[4]]
+    
+    
+    pp=as.character(yus[,input$Programa])
+    tip=as.character(yus[,input$tipo])
+    caus=as.character(yus[,input$Causa])
+    raz=as.character(yus[,input$Razn])
+    
+    rr=data.frame(tip,pp,caus,raz)
+    
+    artt=split(rr,pp)
+    
+    tcnart=artt[[2]]
+    
+    tcnart=na.omit(tcnart)
+    
+    rr2=data.frame(tcnart$pp,tcnart$caus,tcnart$raz)
+    
+    T1 <- table(tcnart$caus,useNA = "no")
+    T1 <- prop.table(T1)
+    
+    barplot((T1),col = 'skyblue', border = 'white',cex.axis =1,cex.names=1,
+            xlab="Causas ",cex.lab=1,ylab="Frecuencia")
+    box()
+    
+    
+```
+
+RAZONES
+
+```{r echo=FALSE, fig.width=8, fig.align='center',fig.height=6}
+  tcnart=artt[[2]]
+    
+    tcnart=na.omit(tcnart)
+    
+    colnames(tcnart) <- c("tipo3","programa3","Causa3","razon3")
+    
+    
+    reorder_size <- function(x) {
+      factor(x, levels = names(sort(table(x),decreasing = TRUE)))
+    }
+    ###%in%levels(ttt$razon)[table(ttt$razon)>1]
+    ggplot(data=tcnart,aes(x=reorder_size(razon3),fill=Causa3)) +
+      geom_histogram(stat = "count",position="dodge",fill=("skyblue"),
+                     aes(y=..count../sum(..count..)))+
+      scale_y_continuous(labels = scales::percent)+  
+      theme(axis.text.x = element_text(angle = 45, hjust = 1,size=16),
+            axis.text.y = element_text(angle = 0, hjust = 1,size=16),
+            axis.text = element_text(size = 10),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+      facet_grid(~Causa3, scales="free", space="free")+
+      labs(x = "Razones ",y = "Frecuencia relativa")
+    
+```
+
+Sistemas de información
+
+CAUSAS
+```{r echo=FALSE, fig.align='center', fig.width=8}
+  inFile <- input$file
+    if (is.null(inFile))
+      return(NULL)
+    data1=read.table(inFile$datapath, header=T)
+    
+    yu=split(data1,data1[, input$facultad])
+    
+    yus=yu[[4]]
+    pp=as.character(yus[,input$Programa])
+    tip=as.character(yus[,input$tipo])
+    caus=as.character(yus[,input$Causa])
+    raz=as.character(yus[,input$Razn])
+    
+    rr=data.frame(tip,pp,caus,raz)
+    
+    artt=split(rr,pp)
+    
+    tcnart=artt[[8]]
+    
+    tcnart=na.omit(tcnart)
+    
+    rr2=data.frame(tcnart$pp,tcnart$caus,tcnart$raz)
+    
+    T1 <- table(tcnart$caus,useNA = "no")
+    T1 <- prop.table(T1)
+    
+    barplot((T1),col = 'skyblue', border = 'white',cex.axis =1,cex.names=1,
+            xlab="Causas ",cex.lab=1,ylab="Frecuencia")
+    box()
+    
+    
+```
+
+RAZONES
+
+```{r echo=FALSE, fig.width=8, fig.align='center',fig.height=6}
+tcnart=artt[[8]]
+    
+    tcnart=na.omit(tcnart)
+    
+    colnames(tcnart) <- c("tipo3","programa3","Causa3","razon3")
+    
+    
+    reorder_size <- function(x) {
+      factor(x, levels = names(sort(table(x),decreasing = TRUE)))
+    }
+    ###%in%levels(ttt$razon)[table(ttt$razon)>1]
+    ggplot(data=tcnart,aes(x=reorder_size(razon3),fill=Causa3)) +
+      geom_histogram(stat = "count",position="dodge",fill=("skyblue"),
+                     aes(y=..count../sum(..count..)))+
+      scale_y_continuous(labels = scales::percent)+  
+      theme(axis.text.x = element_text(angle = 45, hjust = 1,size=16),
+            axis.text.y = element_text(angle = 0, hjust = 1,size=16),
+            axis.text = element_text(size = 10),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+      facet_grid(~Causa3, scales="free", space="free")+
+      labs(x = "Razones ",y = "Frecuencia relativa")
+    
+```
+
+Telecomunicaciones
+CAUSAS
+```{r echo=FALSE, fig.align='center', fig.width=8}
+  inFile <- input$file
+    if (is.null(inFile))
+      return(NULL)
+    data1=read.table(inFile$datapath, header=T)
+    
+    yu=split(data1,data1[, input$facultad])
+    
+    yus=yu[[4]]
+    
+    
+    pp=as.character(yus[,input$Programa])
+    tip=as.character(yus[,input$tipo])
+    caus=as.character(yus[,input$Causa])
+    raz=as.character(yus[,input$Razn])
+    
+    rr=data.frame(tip,pp,caus,raz)
+    
+    artt=split(rr,pp)
+    
+    tcnart=artt[[9]]
+    
+    tcnart=na.omit(tcnart)
+    
+    rr2=data.frame(tcnart$pp,tcnart$caus,tcnart$raz)
+    
+    T1 <- table(tcnart$caus,useNA = "no")
+    T1 <- prop.table(T1)
+    
+    barplot((T1),col = 'skyblue', border = 'white',cex.axis =1,cex.names=1,
+            xlab="Causas ",cex.lab=1,ylab="Frecuencia")
+    box()
+```
+
+RAZONES
+
+```{r echo=FALSE, fig.width=8, fig.align='center',fig.height=6}
+tcnart=artt[[9]]
+    
+    tcnart=na.omit(tcnart)
+    
+    colnames(tcnart) <- c("tipo3","programa3","Causa3","razon3")
+    
+    
+    reorder_size <- function(x) {
+      factor(x, levels = names(sort(table(x),decreasing = TRUE)))
+    }
+    ###%in%levels(ttt$razon)[table(ttt$razon)>1]
+    ggplot(data=tcnart,aes(x=reorder_size(razon3),fill=Causa3)) +
+      geom_histogram(stat = "count",position="dodge",fill=("skyblue"),
+                     aes(y=..count../sum(..count..)))+
+      scale_y_continuous(labels = scales::percent)+  
+      theme(axis.text.x = element_text(angle = 45, hjust = 1,size=16),
+            axis.text.y = element_text(angle = 0, hjust = 1,size=16),
+            axis.text = element_text(size = 10),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+      facet_grid(~Causa3, scales="free", space="free")+
+      labs(x = "Razones ",y = "Frecuencia relativa")
+```
+
+
+
+
+
+CAUSAS DE LOS PROGRAMAS PROFESIONALES DE LA FACULTAD DE INGENIERIAS
+
+
+```{r echo=FALSE}
+
+
+ inFile <- input$file
+       if (is.null(inFile))
+         return(NULL)
+         data1=read.table(inFile$datapath, header=T)
+
+       yu=split(data1,data1[, input$facultad])
+       yus=yu[[4]]
+       
+       pp=as.character(yus[,input$Programa])
+       tip=as.character(yus[,input$tipo])
+       caus=as.character(yus[,input$Causa])
+       raz=as.character(yus[,input$Razn])
+       
+       rr=data.frame(tip,pp,caus,raz)
+       
+       artt=split(rr,tip)
+       tcnart=artt[[1]]
+       
+       tcnart=na.omit(tcnart)
+       pro=as.character(tcnart$pp)
+       
+       t2=table(tcnart$caus,pro)
+       t2=prop.table(t2,2)
+       
+       u=addmargins(t2,1)
+       
+       kable(round(u,3)*100,caption = "Causas en los programas profesionales de la facultad de ingenierias")
+```
+
+
+
+
+
+RAZONES DE LOS PROGRAMAS PROFESIO DE LA FACULTAD DE INGENIERIAS
+```{r echo=FALSE}
+
+       t2=table(tcnart$raz,pro)
+       t2=prop.table(t2,2)
+       
+       u=addmargins(t2,1)
+       
+       kable(round(u,3)*100,
+             caption = "Razones  en los 
+             programas tecnologicos de la facultad de ingenierias")
+       
+```
+
+
+Ingeniería de Sistemas
+CAUSAS
+```{r echo=FALSE, fig.align='center', fig.width=8}
+inFile <- input$file
+    if (is.null(inFile))
+      return(NULL)
+    data1=read.table(inFile$datapath, header=T)
+    
+    yu=split(data1,data1[, input$facultad])
+    
+    yus=yu[[4]]
+    
+    
+    pp=as.character(yus[,input$Programa])
+    tip=as.character(yus[,input$tipo])
+    caus=as.character(yus[,input$Causa])
+    raz=as.character(yus[,input$Razn])
+    
+    rr=data.frame(tip,pp,caus,raz)
+    
+    artt=split(rr,pp)
+    
+    tcnart=artt[[3]]
+    
+    tcnart=na.omit(tcnart)
+    
+    rr2=data.frame(tcnart$pp,tcnart$caus,tcnart$raz)
+    
+    T1 <- table(tcnart$caus,useNA = "no")
+    T1 <- prop.table(T1)
+    
+    barplot((T1),col = 'skyblue', border = 'white',cex.axis =1,cex.names=1,
+            xlab="Causas ",cex.lab=1,ylab="Frecuencia")
+    box()
+    
+```
+
+RAZONES
+
+```{r echo=FALSE, fig.width=8, fig.align='center',fig.height=6}
+  tcnart=artt[[3]]
+    
+    tcnart=na.omit(tcnart)
+    
+    colnames(tcnart) <- c("tipo3","programa3","Causa3","razon3")
+    
+    
+    reorder_size <- function(x) {
+      factor(x, levels = names(sort(table(x),decreasing = TRUE)))
+    }
+    ###%in%levels(ttt$razon)[table(ttt$razon)>1]
+    ggplot(data=tcnart,aes(x=reorder_size(razon3),fill=Causa3)) +
+      geom_histogram(stat = "count",position="dodge",fill=("skyblue"), 
+                     aes(y=..count../sum(..count..)))+
+      scale_y_continuous(labels = scales::percent)+  
+      theme(axis.text.x = element_text(angle = 45, hjust = 1,size=16),
+            axis.text.y = element_text(angle = 0, hjust = 1,size=16),
+            axis.text = element_text(size = 10),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+      facet_grid(~Causa3, scales="free", space="free")+
+      labs(x = "Razones ",y = "Frecuencia relativa")
+```
+Ingeniería Electromecanica
+CAUSAS
+```{r echo=FALSE, fig.align='center', fig.width=8}
+ 
+    inFile <- input$file
+    if (is.null(inFile))
+      return(NULL)
+    data1=read.table(inFile$datapath, header=T)
+    
+    yu=split(data1,data1[, input$facultad])
+    
+    yus=yu[[4]]
+    
+    
+    pp=as.character(yus[,input$Programa])
+    tip=as.character(yus[,input$tipo])
+    caus=as.character(yus[,input$Causa])
+    raz=as.character(yus[,input$Razn])
+    
+    rr=data.frame(tip,pp,caus,raz)
+    
+    artt=split(rr,pp)
+    
+    tcnart=artt[[4]]
+    
+    tcnart=na.omit(tcnart)
+    
+    rr2=data.frame(tcnart$pp,tcnart$caus,tcnart$raz)
+    
+    T1 <- table(tcnart$caus,useNA = "no")
+    T1 <- prop.table(T1)
+    
+    barplot((T1),col = 'skyblue', border = 'white',cex.axis =1,cex.names=1,
+            xlab="Causas ",cex.lab=1,ylab="Frecuencia")
+    box()
+    
+```
+
+RAZONES
+
+```{r echo=FALSE, fig.width=8, fig.align='center',fig.height=6}
+ tcnart=artt[[4]]
+    
+    tcnart=na.omit(tcnart)
+    
+    colnames(tcnart) <- c("tipo3","programa3","Causa3","razon3")
+    
+    
+    reorder_size <- function(x) {
+      factor(x, levels = names(sort(table(x),decreasing = TRUE)))
+    }
+    ###%in%levels(ttt$razon)[table(ttt$razon)>1]
+    ggplot(data=tcnart,aes(x=reorder_size(razon3),fill=Causa3)) +
+      geom_histogram(stat = "count",position="dodge",fill=("skyblue"), aes(y=..count../sum(..count..)))+
+      scale_y_continuous(labels = scales::percent)+  
+      theme(axis.text.x = element_text(angle = 45, hjust = 1,size=16),
+            axis.text.y = element_text(angle = 0, hjust = 1,size=16),
+            axis.text = element_text(size = 10),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+      facet_grid(~Causa3, scales="free", space="free")+
+      labs(x = "Razones ",y = "Frecuencia relativa")
+```
+
+Ingeniería Electrónica
+CAUSAS
+```{r echo=FALSE, fig.align='center', fig.width=8}
+inFile <- input$file
+    if (is.null(inFile))
+      return(NULL)
+    data1=read.table(inFile$datapath, header=T)
+    
+    yu=split(data1,data1[, input$facultad])
+    
+    yus=yu[[4]]
+    
+    
+    pp=as.character(yus[,input$Programa])
+    tip=as.character(yus[,input$tipo])
+    caus=as.character(yus[,input$Causa])
+    raz=as.character(yus[,input$Razn])
+    
+    rr=data.frame(tip,pp,caus,raz)
+    
+    artt=split(rr,pp)
+    
+    tcnart=artt[[5]]
+    
+    tcnart=na.omit(tcnart)
+    
+    rr2=data.frame(tcnart$pp,tcnart$caus,tcnart$raz)
+    
+    T1 <- table(tcnart$caus,useNA = "no")
+    T1 <- prop.table(T1)
+    
+    barplot((T1),col = 'skyblue', border = 'white',cex.axis =1,cex.names=1,
+            xlab="Causas ",cex.lab=1,ylab="Frecuencia")
+    box()
+```
+
+RAZONES
+
+```{r echo=FALSE, fig.width=8, fig.align='center',fig.height=6}
+tcnart=artt[[5]]
+    
+    tcnart=na.omit(tcnart)
+    
+    colnames(tcnart) <- c("tipo3","programa3","Causa3","razon3")
+    
+    
+    reorder_size <- function(x) {
+      factor(x, levels = names(sort(table(x),decreasing = TRUE)))
+    }
+    ###%in%levels(ttt$razon)[table(ttt$razon)>1]
+    ggplot(data=tcnart,aes(x=reorder_size(razon3),fill=Causa3)) +
+      geom_histogram(stat = "count",position="dodge",fill=("skyblue"),
+                     aes(y=..count../sum(..count..)))+
+      theme(axis.text.x = element_text(angle = 45, hjust = 1,size=16),
+            axis.text.y = element_text(angle = 0, hjust = 1,size=16),
+            axis.text = element_text(size = 10),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+      facet_grid(~Causa3, scales="free", space="free")+
+      labs(x = "Razones ",y = "Frecuencia relativa")
+```
+Ingeniería de Telecomunicaciones
+CAUSAS
+```{r echo=FALSE, fig.align='center', fig.width=8}
+ inFile <- input$file
+    if (is.null(inFile))
+      return(NULL)
+    data1=read.table(inFile$datapath, header=T)
+    
+    yu=split(data1,data1[, input$facultad])
+    
+    yus=yu[[4]]
+    
+    
+    
+    pp=as.character(yus[,input$Programa])
+    tip=as.character(yus[,input$tipo])
+    caus=as.character(yus[,input$Causa])
+    raz=as.character(yus[,input$Razn])
+    
+    rr=data.frame(tip,pp,caus,raz)
+    
+    artt=split(rr,pp)
+    
+    tcnart=artt[[6]]
+    
+    tcnart=na.omit(tcnart)
+    
+    rr2=data.frame(tcnart$pp,tcnart$caus,tcnart$raz)
+    
+    T1 <- table(tcnart$caus,useNA = "no")
+    T1 <- prop.table(T1)
+    
+    barplot((T1),col = 'skyblue', border = 'white',cex.axis =1,cex.names=1,
+            xlab="Causas ",cex.lab=1,ylab="Frecuencia")
+    box()
+    
+```
+
+RAZONES
+
+```{r echo=FALSE, fig.width=8, fig.align='center',fig.height=6}
+ tcnart=artt[[6]]
+    
+    tcnart=na.omit(tcnart)
+    
+    colnames(tcnart) <- c("tipo3","programa3","Causa3","razon3")
+    
+    
+    reorder_size <- function(x) {
+      factor(x, levels = names(sort(table(x),decreasing = TRUE)))
+    }
+    ###%in%levels(ttt$razon)[table(ttt$razon)>1]
+    ggplot(data=tcnart,aes(x=reorder_size(razon3),fill=Causa3)) +
+      geom_histogram(stat = "count",position="dodge",fill=("skyblue"),
+                     aes(y=..count../sum(..count..)))+
+      scale_y_continuous(labels = scales::percent)+  
+      theme(axis.text.x = element_text(angle = 45, hjust = 1,size=16),
+            axis.text.y = element_text(angle = 0, hjust = 1,size=16),
+            axis.text = element_text(size = 10),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+      facet_grid(~Causa3, scales="free", space="free")+
+      labs(x = "Razones ",y = "Frecuencia relativa")
+```
+
+Ingeniería de mecatronica
+CAUSAS
+```{r echo=FALSE, fig.align='center', fig.width=8}
+     inFile <- input$file
+    if (is.null(inFile))
+      return(NULL)
+    data1=read.table(inFile$datapath, header=T)
+    
+    yu=split(data1,data1[, input$facultad])
+    
+    yus=yu[[4]]
+    
+    
+    
+    pp=as.character(yus[,input$Programa])
+    tip=as.character(yus[,input$tipo])
+    caus=as.character(yus[,input$Causa])
+    raz=as.character(yus[,input$Razn])
+    
+    rr=data.frame(tip,pp,caus,raz)
+    
+    artt=split(rr,pp)
+    
+    tcnart=artt[[7]]
+    
+    tcnart=na.omit(tcnart)
+    
+    rr2=data.frame(tcnart$pp,tcnart$caus,tcnart$raz)
+    
+    T1 <- table(tcnart$caus,useNA = "no")
+    T1 <- prop.table(T1)
+    
+    barplot((T1),col = 'skyblue', border = 'white',cex.axis =1,cex.names=1,
+            xlab="Causas ",cex.lab=1,ylab="Frecuencia")
+    box()
+```
+
+RAZONES
+
+```{r echo=FALSE, fig.width=8, fig.align='center',fig.height=6}
+
+ tcnart=artt[[7]]
+    
+    tcnart=na.omit(tcnart)
+    
+    colnames(tcnart) <- c("tipo3","programa3","Causa3","razon3")
+    
+    
+    reorder_size <- function(x) {
+      factor(x, levels = names(sort(table(x),decreasing = TRUE)))
+    }
+    ###%in%levels(ttt$razon)[table(ttt$razon)>1]
+    ggplot(data=tcnart,aes(x=reorder_size(razon3),fill=Causa3)) +
+      geom_histogram(stat = "count",position="dodge",fill=("skyblue"),
+                     aes(y=..count../sum(..count..)))+
+      scale_y_continuous(labels = scales::percent)+  
+      theme(axis.text.x = element_text(angle = 45, hjust = 1,size=16),
+            axis.text.y = element_text(angle = 0, hjust = 1,size=16),
+            axis.text = element_text(size = 10),legend.position = "left",
+            strip.text.x = element_text(size=16),
+            axis.title.x =element_text(vjust=-0.5,size=rel(1)),
+            axis.title.y = element_text(vjust=1.5,size=rel(1)),
+            legend.text = element_text(size = rel(1)),
+            panel.background = element_rect(fill = "grey95", colour = "grey50"),
+            strip.background = element_rect(colour = "black", fill = "grey99"))+
+      facet_grid(~Causa3, scales="free", space="free")+
+      labs(x = "Razones ",y = "Frecuencia relativa")
+    
+
+```
+
+
